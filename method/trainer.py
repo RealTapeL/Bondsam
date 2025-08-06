@@ -404,9 +404,18 @@ class BondSAM_Trainer(nn.Module):
 
         return loss
 
-# ... existing code ...
+    # ... existing code ...
 
-# ... existing code ...
+    def train_epoch_with_progress(self, batch_dataloader):
+        self.clip_model.train()
+        loss_list = []
+        for items in batch_dataloader:
+            loss = self.train_one_batch(items)
+            loss_list.append(loss.item())
+            # 更新进度条
+            batch_dataloader.set_postfix({'Batch Loss': f'{loss.item():.4f}'})
+
+        return np.mean(loss_list)
 
 
     def train_epoch(self, loader):

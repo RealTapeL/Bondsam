@@ -65,16 +65,14 @@ except ImportError:
                 raise ImportError("无法导入 BondSAM_Trainer")
 
 setup_seed(111)
+
 def train_bondsam(args):
-    
     # Configurations
     epochs = args.epoch
     learning_rate = args.learning_rate
     batch_size = args.batch_size
     image_size = args.image_size
     device = args.device if args.device else ('cuda' if torch.cuda.is_available() else 'cpu')
-
-    # ... existing code ...
 
     save_fig = args.save_fig
 
@@ -158,8 +156,17 @@ def train_bondsam(args):
     # 引线键合检测的验证策略
     best_f1 = -1e1
 
-    for epoch in tqdm(range(epochs)):
-        loss = model.train_epoch(train_dataloader)
+    # 创建训练进度条
+    epoch_pbar = tqdm(range(epochs), desc="Training Progress", leave=True)
+    
+    for epoch in epoch_pbar:
+        # 为每个epoch创建一个进度条
+        batch_pbar = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{epochs}", leave=False)
+        loss = model.train_epoch_with_progress(batch_dataloader=batch_pbar)
+        batch_pbar.close()
+        
+        # 更新进度条描述信息
+        epoch_pbar.set_postfix({'Loss': f'{loss:.4f}'})
 
         # Logs
         if (epoch + 1) % args.print_freq == 0:

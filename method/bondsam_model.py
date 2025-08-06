@@ -8,8 +8,6 @@ try:
     from sklearn.cluster import KMeans
 except ImportError:
     KMeans = None
-
-
 class ProjectLayer(nn.Module):
     def __init__(self, input_dim, output_dim, num_replicas, stack=False, is_array=True):
         super(ProjectLayer, self).__init__()
@@ -27,7 +25,6 @@ class ProjectLayer(nn.Module):
             else:
                 temp = self.head[i](tokens)
 
-            # 避免就地操作，使用新变量
             temp_normalized = temp / (temp.norm(dim=-1, keepdim=True) + 1e-8)  # 添加小值避免除零
             out_tokens.append(temp_normalized)
 
@@ -40,7 +37,6 @@ class PromptLayer(nn.Module):
     def __init__(self, channel, length, depth, is_text, prompting_type, enabled=True):
         super(PromptLayer, self).__init__()
 
-        # 初始化类的属性
         self.channel = channel  # 通道数
         self.length = length  # 提示长度
         self.depth = depth  # 深度
@@ -298,9 +294,6 @@ class HybridSemanticFusion(nn.Module):
                 gather(dim=1, index=top_k_indices.unsqueeze(-1).
                        expand(-1, -1, patch_tokens[layer].shape[-1]))
             selected_abnormal_tokens.append(selected_tokens)
-
-        # use kmeans to extract these centriods
-        # Stack the data_preprocess
         stacked_data = torch.cat(selected_abnormal_tokens, dim=2)
 
         batch_cluster_centers = []
@@ -309,7 +302,6 @@ class HybridSemanticFusion(nn.Module):
             if self.cluster_performer:
                 cluster_labels = self.cluster_performer.fit_predict(stacked_data[b, :, :].detach().cpu().numpy())
             else:
-                # 简单的替代方案
                 cluster_labels = np.zeros(stacked_data[b, :, :].shape[0])
 
             # Initialize a list to store the cluster centers
@@ -329,7 +321,6 @@ class HybridSemanticFusion(nn.Module):
                     # 如果没有数据，创建零向量
                     cluster_centers.append(torch.zeros(1, selected_abnormal_tokens[0].shape[2]))
 
-            # Normalize the cluster centers
             if cluster_centers:
                 cluster_centers = torch.cat(cluster_centers, dim=0)
                 cluster_centers = torch.mean(cluster_centers, dim=0)
@@ -342,19 +333,14 @@ class HybridSemanticFusion(nn.Module):
 
         return batch_cluster_centers
 
-# ... existing code ...
-
 class BondSAM(nn.Module):
     def __init__(self, freeze_clip, text_channel: int, visual_channel: int,
                  prompting_length: int, prompting_depth: int, prompting_branch: str, prompting_type: str,
                  use_hsf: bool, k_clusters: int,
                  output_layers: list, device: str, image_size: int):
-        # 调用父类的构造函数
         super(BondSAM, self).__init__()
-        # 保存传入的CLIP模型
         self.freeze_clip = freeze_clip
 
-        # 从CLIP模型中提取各个组件
         self.visual = getattr(self.freeze_clip, 'visual', nn.Module())
         self.transformer = getattr(self.freeze_clip, 'transformer', nn.Module())
         self.token_embedding = getattr(self.freeze_clip, 'token_embedding', nn.Module())
@@ -363,10 +349,8 @@ class BondSAM(nn.Module):
         self.text_projection = getattr(self.freeze_clip, 'text_projection', torch.tensor([]))
         self.attn_mask = getattr(self.freeze_clip, 'attn_mask', None)
 
-        # 保存输出层信息
         self.output_layers = output_layers
 
-        # 保存提示相关的参数
         self.prompting_branch = prompting_branch
         self.prompting_type = prompting_type
         self.prompting_depth = prompting_depth
@@ -427,8 +411,6 @@ class BondSAM(nn.Module):
         # 如果使用混合语义融合，则初始化混合语义融合层
         if self.use_hsf:
             self.HSF = HybridSemanticFusion(k_clusters)
-
-        # 保存图像大小和设备信息
         self.image_size = image_size
         self.device = device
 
@@ -454,19 +436,15 @@ class BondSAM(nn.Module):
                 pass  
 
     def encode_image(self, image, fastsam_mask=None):
-        # 确保输入图像在正确的设备上并具有正确的数据类型
         if image.dtype != torch.float32:
             image = image.float()
             
-        # 确保输入在正确的设备上
         if image.device != self.device:
             image = image.to(self.device)
         
         x = image
-        
-        # 如果提供了FastSAM mask，可以在这里与视觉特征结合
+    
         if fastsam_mask is not None:
-            # 确保FastSAM mask在正确的设备上
             if fastsam_mask.device != self.device:
                 fastsam_mask = fastsam_mask.to(self.device)
                 
@@ -660,19 +638,13 @@ class BondSAM(nn.Module):
                 anomaly_maps[i] = torch.softmax(anomaly_maps[i], dim=1)
             return anomaly_maps, anomaly_score
 
-    # ... existing code ...
-
     def extract_feat(self, image, cls_name, fastsam_mask=None):
-        # 确保输入在正确的设备上
         if image.device != self.device:
             image = image.to(self.device)
             
         if 'D' in self.prompting_type:
-            self.generate_and_set_dynamic_promtps(image) # generate and set dynamic prompts for corresponding prompters
-
-        # 如果提供了FastSAM mask，可以在这里将其与图像结合
+            self.generate_and_set_dynamic_promtps(image)
         if fastsam_mask is not None:
-            # 确保FastSAM mask在正确的设备上
             if fastsam_mask.device != self.device:
                 fastsam_mask = fastsam_mask.to(self.device)
 
@@ -691,17 +663,13 @@ class BondSAM(nn.Module):
         proj_cls_tokens, proj_patch_tokens = self.proj_visual_tokens(image_features, patch_tokens)
 
         return proj_cls_tokens, proj_patch_tokens, text_features
-    # @torch.amp.autocast('cuda')  # 移除这行
+    # @torch.amp.autocast('cuda') 
     def forward(self, image, cls_name, aggregation=True, fastsam_mask=None):
-        # 确保输入图像的数据类型正确
         if image.dtype != torch.float32:
             image = image.float()
-            
-        # 如果有FastSAM mask，确保数据类型正确
         if fastsam_mask is not None and fastsam_mask.dtype != torch.float32:
             fastsam_mask = fastsam_mask.float()
-            
-        # extract features for images and texts
+    
         image_features, patch_tokens, text_features = self.extract_feat(image, cls_name, fastsam_mask=fastsam_mask)
         anomaly_map, anomaly_score = self.visual_text_similarity(image_features, patch_tokens, text_features, aggregation)
 
