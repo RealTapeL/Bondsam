@@ -51,33 +51,56 @@ except ImportError:
             pass
 
 from .bondsam_model import BondSAM
+# ... existing code ...
+
 try:
     from .clip_model import create_model_and_transforms
 except ImportError:
     # 占位实现
     def create_model_and_transforms(*args, **kwargs):
+        import torch
+        import torch.nn as nn
+        import torchvision.transforms as transforms
+        
+        class DummyVisual:
+            def __init__(self):
+                self.class_embedding = torch.randn(512)
+                self.positional_embedding = torch.randn(197, 512)
+                self.conv1 = nn.Conv2d(3, 512, kernel_size=16, stride=16)
+                self.ln_pre = nn.LayerNorm(512)
+                
+                class Resblocks:
+                    def __init__(self):
+                        self.resblocks = [nn.Module() for _ in range(12)]
+                self.transformer = Resblocks()
+                self.ln_post = nn.LayerNorm(512)
+                self.proj = torch.randn(512, 512)
+                
+            def forward(self, x, output_layers):
+                # 简单的占位实现
+                b, c, h, w = x.shape
+                features = torch.randn(b, 512)
+                patch_tokens = [torch.randn(b, (h//16)*(w//16), 512) for _ in output_layers]
+                patch_embedding = torch.randn(b, (h//16)*(w//16) + 1, 512)
+                return features, patch_tokens, patch_embedding
+                
+        class DummyTransformer:
+            def __init__(self):
+                self.get_cast_dtype = lambda: torch.float32
+                class Resblocks:
+                    def __init__(self):
+                        self.resblocks = [nn.Module() for _ in range(12)]
+                self.resblocks = Resblocks()
+                
         class DummyModel:
             def __init__(self):
                 # 添加必要的属性
-                self.visual = type('obj', (object,), {
-                    'class_embedding': torch.randn(768),
-                    'positional_embedding': torch.randn(257, 768),
-                    'conv1': nn.Conv2d(3, 768, kernel_size=16, stride=16),
-                    'ln_pre': nn.LayerNorm(768),
-                    'transformer': type('obj', (object,), {
-                        'resblocks': [nn.Module() for _ in range(12)]
-                    })(),
-                    'ln_post': nn.LayerNorm(768),
-                    'proj': torch.randn(768, 768)
-                })()
-                self.transformer = type('obj', (object,), {
-                    'get_cast_dtype': lambda: torch.float32,
-                    'resblocks': [nn.Module() for _ in range(12)]
-                })()
-                self.token_embedding = nn.Embedding(1000, 768)
-                self.positional_embedding = torch.randn(77, 768)
-                self.ln_final = nn.LayerNorm(768)
-                self.text_projection = torch.randn(768, 768)
+                self.visual = DummyVisual()
+                self.transformer = DummyTransformer()
+                self.token_embedding = nn.Embedding(1000, 512)
+                self.positional_embedding = torch.randn(77, 512)
+                self.ln_final = nn.LayerNorm(512)
+                self.text_projection = torch.randn(512, 512)
                 self.attn_mask = None
             
             def to(self, device):
@@ -86,7 +109,7 @@ except ImportError:
                 return self
             def encode_text(self, text):
                 # 简单的占位实现
-                return torch.randn(text.shape[0], 768)
+                return torch.randn(text.shape[0], 512)
         
         return DummyModel(), None, transforms.Compose([
             transforms.Resize((224, 224)),

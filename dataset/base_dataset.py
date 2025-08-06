@@ -5,6 +5,7 @@ import json
 import os
 import random
 import numpy as np
+import torch
 import torch.utils.data as data
 from PIL import Image
 import cv2
@@ -150,6 +151,7 @@ class BaseDataset(data.Dataset):
             # 使用默认mask
             fastsam_mask = torch.ones((1, img.size[1], img.size[0]), dtype=torch.float32) * 0.5
         
+        # 确保所有数据在应用转换前都是PIL图像
         # Transforms
         if self.transform is not None:
             img = self.transform(img)
@@ -160,8 +162,8 @@ class BaseDataset(data.Dataset):
 
         # 确保返回的都是张量，而不是原始PIL图像
         return {
-            'img': img,  # 已经是张量
-            'img_mask': img_mask,  # 已经是张量
+            'img': img,  # 已经通过transform转换为张量
+            'img_mask': img_mask,  # 已经通过target_transform转换为张量
             'cls_name': cls_name,
             'anomaly': torch.tensor(anomaly, dtype=torch.float32),
             'img_path': img_path,

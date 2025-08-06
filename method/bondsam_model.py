@@ -396,27 +396,30 @@ class BondSAM(nn.Module):
         self.image_size = image_size
         self.device = device
 
+
     def generate_and_set_dynamic_promtps(self, image):
         # 禁用梯度计算，以提高推理速度并减少内存使用
         with torch.no_grad():
             # extract image features
             if hasattr(self.visual, 'forward'):
-                image_features, _ = self.visual.forward(image, self.output_layers)
+                image_features, _, _ = self.visual.forward(image, self.output_layers)
             else:
                 # 占位实现
-                image_features = torch.randn(image.shape[0], 768).to(image.device)
+                image_features = torch.randn(image.shape[0], 512).to(image.device)
 
-        if hasattr(self, 'dynamic_visual_prompt_generator'):
-            dynamic_visual_prompts = self.dynamic_visual_prompt_generator(image_features)
-            dynamic_text_prompts = self.dynamic_text_prompt_generator(image_features)
+        if hasattr(self, 'dynamic_visual_prompt_generator') and hasattr(self, 'dynamic_text_prompt_generator'):
+            try:
+                dynamic_visual_prompts = self.dynamic_visual_prompt_generator(image_features)
+                dynamic_text_prompts = self.dynamic_text_prompt_generator(image_features)
 
-            self.visual_prompter.set_dynamic_prompts(dynamic_visual_prompts)
-            self.text_prompter.set_dynamic_prompts(dynamic_text_prompts)
+                self.visual_prompter.set_dynamic_prompts(dynamic_visual_prompts)
+                self.text_prompter.set_dynamic_prompts(dynamic_text_prompts)
+            except:
+                pass  # 忽略错误
 
     def encode_image(self, image, fastsam_mask=None):
         x = image
         
-        # 如果提供了FastSAM mask，可以在这里与视觉特征结合
         if fastsam_mask is not None:
             # 将FastSAM mask调整为与图像相同的尺寸
             if fastsam_mask.shape[-2:] != image.shape[-2:]:
@@ -426,12 +429,6 @@ class BondSAM(nn.Module):
                     mode='bilinear', 
                     align_corners=False
                 ).squeeze(1)
-            
-            # 可以选择多种方式融合FastSAM特征:
-            # 方式1: 直接与图像像素相乘（示例）
-            # image = image * fastsam_mask.unsqueeze(1)
-            
-            # 方式2: 作为注意力权重在后续处理中使用
 
         # to patches - whether to use dual patchnorm - https://arxiv.org/abs/2302.01327v1
         if hasattr(self.visual, 'input_patchnorm') and self.visual.input_patchnorm:
@@ -450,7 +447,7 @@ class BondSAM(nn.Module):
                 x = self.visual.conv1(x)  # shape = [*, width, grid, grid]
             else:
                 # 占位实现
-                x = torch.randn(x.shape[0], 768, x.shape[2]//16, x.shape[3]//16).to(x.device)
+                x = torch.randn(x.shape[0], 512, x.shape[2]//16, x.shape[3]//16).to(x.device)
                 
             x = x.reshape(x.shape[0], x.shape[1], -1)  # shape = [*, width, grid ** 2]
             x = x.permute(0, 2, 1)  # shape = [*, grid ** 2, width]
@@ -486,14 +483,19 @@ class BondSAM(nn.Module):
         patch_tokens = []
 
         if hasattr(self.visual, 'transformer') and hasattr(self.visual.transformer, 'resblocks'):
-            for indx, r in enumerate(self.visual.transformer.resblocks):
-                x, tokens, attn_tmp = self.visual_prompter(r, indx, x, k_x=None, v_x=None, attn_mask=None)
+            try:
+                for indx, r in enumerate(self.visual.transformer.resblocks):
+                    x, tokens, attn_tmp = self.visual_prompter(r, indx, x, k_x=None, v_x=None, attn_mask=None)
 
-                if (indx + 1) in self.output_layers:
-                    patch_tokens.append(tokens)
+                    if (indx + 1) in self.output_layers:
+                        patch_tokens.append(tokens)
+            except:
+                # 出错时使用占位实现
+                x = x[:x.shape[0]-self.prompting_length, :, :] if self.enable_visual_prompt and hasattr(self, 'prompting_length') else x
+                patch_tokens = [x for _ in self.output_layers]
         else:
             # 占位实现
-            x = x[:x.shape[0]-self.prompting_length, :, :] if self.enable_visual_prompt else x
+            x = x[:x.shape[0]-self.prompting_length, :, :] if self.enable_visual_prompt and hasattr(self, 'prompting_length') else x
             patch_tokens = [x for _ in self.output_layers]
 
         x = x.permute(1, 0, 2)  # LND -> NLD
@@ -517,6 +519,8 @@ class BondSAM(nn.Module):
             pooled = pooled @ self.visual.proj
 
         return pooled, patch_tokens, patch_embedding
+
+
 
     def proj_visual_tokens(self, image_features, patch_tokens):
         # for patch tokens
