@@ -1,0 +1,4 @@
+__pycache__/
+FastSAM/igbt/
+FastSAM/weights/
+FastSAM/output/
