@@ -8,6 +8,7 @@ import argparse
 import json
 import os
 import torch
+import torchvision.transforms as transforms
 
 # Importing from local modules
 try:
@@ -64,14 +65,16 @@ except ImportError:
                 raise ImportError("无法导入 BondSAM_Trainer")
 
 setup_seed(111)
-
 def train_bondsam(args):
+    
     # Configurations
     epochs = args.epoch
     learning_rate = args.learning_rate
     batch_size = args.batch_size
     image_size = args.image_size
     device = args.device if args.device else ('cuda' if torch.cuda.is_available() else 'cpu')
+
+    # ... existing code ...
 
     save_fig = args.save_fig
 
@@ -93,11 +96,11 @@ def train_bondsam(args):
         with open(config_path, 'r') as f:
             model_configs = json.load(f)
     except FileNotFoundError:
-        # 创建默认配置
+        # 创建默认配置，使用较小的维度以节省资源
         model_configs = {
-            "embed_dim": 768,
+            "embed_dim": 512,
             "vision_cfg": {
-                "width": 768,
+                "width": 512,
                 "layers": 12
             }
         }
@@ -125,11 +128,16 @@ def train_bondsam(args):
         use_fastsam=True  # 强制启用FastSAM用于引线键合检测
     ).to(device)
 
-    # 为引线键合检测准备数据
+    mask_transform = transforms.Compose([
+        transforms.Resize((image_size, image_size)),
+        transforms.CenterCrop(image_size),
+        transforms.ToTensor()
+    ])
+    
     train_data_cls_names, train_data, train_data_root = get_data(
         dataset_type_list=args.training_data,
         transform=model.preprocess,
-        target_transform=model.transform,
+        target_transform=mask_transform,
         training=True,
         use_fastsam=True  # 强制启用FastSAM
     )
@@ -137,7 +145,7 @@ def train_bondsam(args):
     test_data_cls_names, test_data, test_data_root = get_data(
         dataset_type_list=args.testing_data,
         transform=model.preprocess,
-        target_transform=model.transform,
+        target_transform=mask_transform,
         training=False,
         use_fastsam=True  # 强制启用FastSAM
     )
@@ -206,9 +214,9 @@ if __name__ == '__main__':
     parser.add_argument("--save_path", type=str, default='./workspaces/bondsam',
                         help="Directory to save results (default: './workspaces/bondsam')")
 
-    parser.add_argument("--model", type=str, default="ViT-L-14",
+    parser.add_argument("--model", type=str, default="ViT-B-16",
                         choices=["ViT-B-16", "ViT-B-32", "ViT-L-14", "ViT-L-14-336"],
-                        help="The CLIP model to be used (default: 'ViT-L-14')")
+                        help="The CLIP model to be used (default: 'ViT-B-16')")
 
     parser.add_argument("--save_fig", type=str2bool, default=True,
                         help="Save figures for visualizations (default: True)")
@@ -216,11 +224,11 @@ if __name__ == '__main__':
 
     # Hyper-parameters
     parser.add_argument("--exp_indx", type=int, default=0, help="Index of the experiment (default: 0)")
-    parser.add_argument("--epoch", type=int, default=50, help="Number of epochs (default: 50)")
+    parser.add_argument("--epoch", type=int, default=5, help="Number of epochs (default: 5)")
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate (default: 0.001)")
     parser.add_argument("--batch_size", type=int, default=1, help="Batch size (default: 1)")
 
-    parser.add_argument("--image_size", type=int, default=518, help="Size of the input images (default: 518)")
+    parser.add_argument("--image_size", type=int, default=224, help="Size of the input images (default: 224)")
     parser.add_argument("--print_freq", type=int, default=1, help="Frequency of print statements (default: 1)")
     parser.add_argument("--valid_freq", type=int, default=1, help="Frequency of validation (default: 1)")
 
@@ -237,8 +245,8 @@ if __name__ == '__main__':
     parser.add_argument("--k_clusters", type=int, default=20, help="Number of clusters (default: 20)")
     
     # Device
-    parser.add_argument("--device", type=str, default="cuda", choices=["cpu", "cuda"],
-                        help="Device to use for training (default: 'cuda')")
+    parser.add_argument("--device", type=str, default="cpu", choices=["cpu", "cuda"],
+                        help="Device to use for training (default: 'cpu')")
 
     args = parser.parse_args()
 

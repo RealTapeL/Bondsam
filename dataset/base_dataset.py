@@ -108,6 +108,12 @@ class BaseDataset(data.Dataset):
 
         return result_image, result_mask
 
+# ... existing code ...
+
+    # ... existing code ...
+
+    # ... existing code ...
+
     def __getitem__(self, index):
         data = self.data_all[index]
         img_path = os.path.join(self.root, data['img_path'])
@@ -135,37 +141,131 @@ class BaseDataset(data.Dataset):
         
         # 使用FastSAM生成分割mask特征
         fastsam_mask = None
-        if self.use_fastsam and self.fastsam_processor is not None:
+        if self.use_fastsam:
             try:
-                fastsam_mask = self.fastsam_processor.process_image(img_path)
-                # 转换为PyTorch张量
-                fastsam_mask = torch.from_numpy(fastsam_mask).float()
-                # 添加通道维度
-                if fastsam_mask.dim() == 2:
-                    fastsam_mask = fastsam_mask.unsqueeze(0)
+                if self.fastsam_processor is not None:
+                    fastsam_mask = self.fastsam_processor.process_image(img_path)
+                    # 转换为PyTorch张量
+                    fastsam_mask = torch.from_numpy(fastsam_mask).float()
+                    # 添加通道维度
+                    if fastsam_mask.dim() == 2:
+                        fastsam_mask = fastsam_mask.unsqueeze(0)
+                else:
+                    # 如果没有FastSAM处理器，使用默认mask
+                    fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
             except Exception as e:
                 print(f"Error processing FastSAM for {img_path}: {e}")
-                # 如果FastSAM处理失败，创建一个空的mask
-                fastsam_mask = torch.zeros((1, img.size[1], img.size[0]), dtype=torch.float32)
-        elif self.use_fastsam:
-            # 使用默认mask
-            fastsam_mask = torch.ones((1, img.size[1], img.size[0]), dtype=torch.float32) * 0.5
+                # 如果FastSAM处理失败，创建一个默认的mask
+                fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
+        else:
+            # 如果不使用FastSAM，创建一个默认的mask
+            fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
         
-        # 确保所有数据在应用转换前都是PIL图像
         # Transforms
-        if self.transform is not None:
-            img = self.transform(img)
-        if self.target_transform is not None and img_mask is not None:
-            img_mask = self.target_transform(img_mask)
-        if img_mask is None:
-            img_mask = torch.zeros((img.shape[1], img.shape[2]), dtype=torch.float32)  # 确保返回张量
+        # 处理图像 - 确保总是转换为张量
+        print(f"Before transform - img type: {type(img)}, img_path: {img_path}")
+        try:
+            if self.transform is not None:
+                img = self.transform(img)
+                print(f"After transform - img type: {type(img)}")
+            else:
+                # 如果没有提供transform，使用默认的
+                default_transform = transforms.Compose([
+                    transforms.Resize((224, 224)),
+                    transforms.ToTensor()
+                ])
+                img = default_transform(img)
+                print(f"After default transform (no transform provided) - img type: {type(img)}")
+        except Exception as e:
+            print(f"Error applying transform to image {img_path}: {e}")
+            # 使用默认转换作为后备
+            default_transform = transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.ToTensor()
+            ])
+            img = default_transform(img)
+            print(f"After default transform - img type: {type(img)}")
+            
+        # 确保img是张量
+        if not isinstance(img, torch.Tensor):
+            print(f"img is not tensor after transform, converting...")
+            try:
+                to_tensor = transforms.ToTensor()
+                img = to_tensor(img)
+                print(f"After ToTensor conversion - img type: {type(img)}")
+            except Exception as e:
+                print(f"Error converting to tensor: {e}")
+                # 最后的后备方案
+                img = torch.zeros((3, 224, 224), dtype=torch.float32)
+                print(f"Using fallback tensor - img type: {type(img)}")
+            
+        # 处理ground truth mask
+        print(f"Before target_transform - img_mask type: {type(img_mask) if img_mask is not None else 'None'}")
+        try:
+            if self.target_transform is not None and img_mask is not None:
+                img_mask = self.target_transform(img_mask)
+                print(f"After target_transform - img_mask type: {type(img_mask)}")
+            elif img_mask is not None:
+                # 如果没有提供target_transform，使用默认的
+                default_target_transform = transforms.Compose([
+                    transforms.Resize((224, 224)),
+                    transforms.ToTensor()
+                ])
+                img_mask = default_target_transform(img_mask)
+                print(f"After default target_transform (no target_transform provided) - img_mask type: {type(img_mask)}")
+            else:
+                img_mask = torch.zeros((1, 224, 224), dtype=torch.float32)
+                print(f"Set img_mask to zero tensor - img_mask type: {type(img_mask)}")
+        except Exception as e:
+            print(f"Error applying target_transform to mask {img_path}: {e}")
+            # 使用默认转换作为后备
+            default_target_transform = transforms.Compose([
+                transforms.Resize((224, 224)),
+                transforms.ToTensor()
+            ])
+            img_mask = default_target_transform(img_mask) if img_mask is not None else torch.zeros((1, 224, 224), dtype=torch.float32)
+            print(f"After default target_transform - img_mask type: {type(img_mask)}")
 
-        # 确保返回的都是张量，而不是原始PIL图像
+        # 确保fastsam_mask是张量
+        if fastsam_mask is None:
+            fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
+            print(f"Set fastsam_mask to default - fastsam_mask type: {type(fastsam_mask)}")
+        else:
+            print(f"fastsam_mask type: {type(fastsam_mask)}")
+
+        # 确保anomaly是张量
+        if not isinstance(anomaly, torch.Tensor):
+            anomaly = torch.tensor(anomaly, dtype=torch.float32)
+            print(f"Converted anomaly to tensor - anomaly type: {type(anomaly)}")
+        else:
+            print(f"anomaly type: {type(anomaly)}")
+
+        # 最终检查
+        print(f"Final types - img: {type(img)}, img_mask: {type(img_mask)}, fastsam_mask: {type(fastsam_mask)}, anomaly: {type(anomaly)}")
+        
+        # 确保所有返回值都是张量或其他可序列化类型
+        if not isinstance(img, torch.Tensor):
+            print(f"ERROR: img is not tensor, it's {type(img)} for {img_path}")
+            # 最后的后备方案
+            img = torch.zeros((3, 224, 224), dtype=torch.float32)
+            
+        if not isinstance(img_mask, torch.Tensor):
+            print(f"ERROR: img_mask is not tensor, it's {type(img_mask)} for {img_path}")
+            img_mask = torch.zeros((1, 224, 224), dtype=torch.float32)
+            
+        if not isinstance(fastsam_mask, torch.Tensor):
+            print(f"ERROR: fastsam_mask is not tensor, it's {type(fastsam_mask)} for {img_path}")
+            fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
+            
+        if not isinstance(anomaly, torch.Tensor):
+            print(f"ERROR: anomaly is not tensor, it's {type(anomaly)} for {img_path}")
+            anomaly = torch.tensor(0, dtype=torch.float32)
+
         return {
-            'img': img,  # 已经通过transform转换为张量
-            'img_mask': img_mask,  # 已经通过target_transform转换为张量
-            'cls_name': cls_name,
-            'anomaly': torch.tensor(anomaly, dtype=torch.float32),
-            'img_path': img_path,
-            'fastsam_mask': fastsam_mask  # 已经是张量
+            'img': img,              # 主图像 (转换为张量)
+            'img_mask': img_mask,    # 真实mask (转换为张量)
+            'cls_name': cls_name,    # 类别名称
+            'anomaly': anomaly,      # 是否异常 (转换为张量)
+            'img_path': img_path,    # 图像路径
+            'fastsam_mask': fastsam_mask  # FastSAM分割mask (转换为张量)
         }

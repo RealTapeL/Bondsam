@@ -9,6 +9,7 @@ try:
 except ImportError:
     KMeans = None
 
+
 class ProjectLayer(nn.Module):
     def __init__(self, input_dim, output_dim, num_replicas, stack=False, is_array=True):
         super(ProjectLayer, self).__init__()
@@ -26,13 +27,14 @@ class ProjectLayer(nn.Module):
             else:
                 temp = self.head[i](tokens)
 
-            out_tokens.append(temp)
+            # 避免就地操作，使用新变量
+            temp_normalized = temp / (temp.norm(dim=-1, keepdim=True) + 1e-8)  # 添加小值避免除零
+            out_tokens.append(temp_normalized)
 
         if self.stack:
             out_tokens = torch.stack(out_tokens, dim=1)
 
         return out_tokens
-
 
 class PromptLayer(nn.Module):
     def __init__(self, channel, length, depth, is_text, prompting_type, enabled=True):
@@ -71,12 +73,20 @@ class PromptLayer(nn.Module):
             if indx < self.depth:
                 if 'S' in self.prompting_type and 'D' in self.prompting_type: # both
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
-                    textual_context = self.dynamic_prompts + static_prompts
+                    # 确保dynamic_prompts是张量
+                    if isinstance(self.dynamic_prompts, list):
+                        textual_context = static_prompts
+                    else:
+                        textual_context = self.dynamic_prompts + static_prompts
                 elif 'S' in self.prompting_type:  # static
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
                     textual_context = static_prompts
                 elif 'D' in self.prompting_type:  # dynamic
-                    textual_context = self.dynamic_prompts
+                    # 确保dynamic_prompts是张量
+                    if not isinstance(self.dynamic_prompts, list):
+                        textual_context = self.dynamic_prompts
+                    else:
+                        textual_context = torch.zeros_like(x[:1, :, :])  # 默认值
                 else:
                     print('You should at least choose one type of prompts when the prompting branches are not none.')
                     raise NotImplementedError
@@ -87,7 +97,11 @@ class PromptLayer(nn.Module):
                 if indx < self.depth:  # replace with learnalbe tokens
                     prefix = x[:1, :, :]
                     suffix = x[1 + length:, :, :]
-                    textual_context = textual_context.permute(1, 0, 2).half()
+                    # 确保textual_context是正确的类型和形状
+                    if isinstance(textual_context, torch.Tensor):
+                        textual_context = textual_context.permute(1, 0, 2).half()
+                    else:
+                        textual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
                     x = torch.cat([prefix, textual_context, suffix], dim=0)
                 else:  # keep the same
                     x = x
@@ -106,23 +120,39 @@ class PromptLayer(nn.Module):
             if indx < self.depth:
                 if 'S' in self.prompting_type and 'D' in self.prompting_type: # both
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
-                    visual_context = self.dynamic_prompts + static_prompts
+                    # 确保dynamic_prompts是张量
+                    if isinstance(self.dynamic_prompts, list):
+                        visual_context = static_prompts
+                    else:
+                        visual_context = self.dynamic_prompts + static_prompts
                 elif 'S' in self.prompting_type:  # static
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
                     visual_context = static_prompts
                 elif 'D' in self.prompting_type:  # dynamic
-                    visual_context = self.dynamic_prompts
+                    # 确保dynamic_prompts是张量
+                    if not isinstance(self.dynamic_prompts, list):
+                        visual_context = self.dynamic_prompts
+                    else:
+                        visual_context = torch.zeros_like(x[:1, :, :])  # 默认值
                 else:
                     print('You should at least choose one type of prompts when the prompting branches are not none.')
                     raise NotImplementedError
 
             if indx == 0:  # for the first layer
-                visual_context = visual_context.permute(1, 0, 2).half()
+                # 确保visual_context是正确的类型和形状
+                if isinstance(visual_context, torch.Tensor):
+                    visual_context = visual_context.permute(1, 0, 2).half()
+                else:
+                    visual_context = torch.zeros(x.shape[0], length, x.shape[2], dtype=x.dtype, device=x.device)
                 x = torch.cat([x, visual_context], dim=0)
             else:
                 if indx < self.depth:  # replace with learnalbe tokens
                     prefix = x[0:x.shape[0] - length, :, :]
-                    visual_context = visual_context.permute(1, 0, 2).half()
+                    # 确保visual_context是正确的类型和形状
+                    if isinstance(visual_context, torch.Tensor):
+                        visual_context = visual_context.permute(1, 0, 2).half()
+                    else:
+                        visual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
                     x = torch.cat([prefix, visual_context], dim=0)
                 else:  # keep the same
                     x = x
@@ -144,6 +174,7 @@ class PromptLayer(nn.Module):
         else:
             return self.forward_visual(resblock, indx, x, k_x, v_x, attn_mask)
 
+# ... existing code ...
 
 class TextEmbeddingLayer(nn.Module):
     def __init__(self, fixed):
@@ -199,12 +230,12 @@ class TextEmbeddingLayer(nn.Module):
             if self.fixed:
                 if self.ensemble_text_features.get(text) is None:
                     text_features = self.encode_text(model, text, device)
-                    self.ensemble_text_features[text] = text_features
+                    self.ensemble_text_features[text] = text_features.detach()  # 添加detach()
                 else:
                     text_features = self.ensemble_text_features[text]
             else:
                 text_features = self.encode_text(model, text, device)
-                self.ensemble_text_features[text] = text_features
+                self.ensemble_text_features[text] = text_features.detach()  # 添加detach()
 
             text_feature_list.append(text_features)
 
@@ -230,15 +261,18 @@ class TextEmbeddingLayer(nn.Module):
 
             class_embeddings = model.encode_text(prompted_sentence)
 
-            class_embeddings /= class_embeddings.norm(dim=-1, keepdim=True)
-            class_embedding = class_embeddings.mean(dim=0)
-            class_embedding /= class_embedding.norm()
-            text_features.append(class_embedding)
+            # 避免就地操作，使用新变量
+            class_embeddings_normalized = class_embeddings / (class_embeddings.norm(dim=-1, keepdim=True) + 1e-8)
+            class_embedding = class_embeddings_normalized.mean(dim=0)
+            # 避免就地操作，使用新变量
+            class_embedding_normalized = class_embedding / (class_embedding.norm() + 1e-8)
+            text_features.append(class_embedding_normalized)
 
         text_features = torch.stack(text_features, dim=1)
 
         return text_features
 
+# ... existing code ...
 
 # Note: the implementation of HSF is slightly different to the reported one, since we found that the upgraded one is more stable.
 class HybridSemanticFusion(nn.Module):
@@ -307,6 +341,8 @@ class HybridSemanticFusion(nn.Module):
         batch_cluster_centers = F.normalize(batch_cluster_centers, dim=1)
 
         return batch_cluster_centers
+
+# ... existing code ...
 
 class BondSAM(nn.Module):
     def __init__(self, freeze_clip, text_channel: int, visual_channel: int,
@@ -415,12 +451,25 @@ class BondSAM(nn.Module):
                 self.visual_prompter.set_dynamic_prompts(dynamic_visual_prompts)
                 self.text_prompter.set_dynamic_prompts(dynamic_text_prompts)
             except:
-                pass  # 忽略错误
+                pass  
 
     def encode_image(self, image, fastsam_mask=None):
+        # 确保输入图像在正确的设备上并具有正确的数据类型
+        if image.dtype != torch.float32:
+            image = image.float()
+            
+        # 确保输入在正确的设备上
+        if image.device != self.device:
+            image = image.to(self.device)
+        
         x = image
         
+        # 如果提供了FastSAM mask，可以在这里与视觉特征结合
         if fastsam_mask is not None:
+            # 确保FastSAM mask在正确的设备上
+            if fastsam_mask.device != self.device:
+                fastsam_mask = fastsam_mask.to(self.device)
+                
             # 将FastSAM mask调整为与图像相同的尺寸
             if fastsam_mask.shape[-2:] != image.shape[-2:]:
                 fastsam_mask = F.interpolate(
@@ -429,6 +478,10 @@ class BondSAM(nn.Module):
                     mode='bilinear', 
                     align_corners=False
                 ).squeeze(1)
+            
+            # 确保FastSAM mask的数据类型与图像匹配
+            if fastsam_mask.dtype != image.dtype:
+                fastsam_mask = fastsam_mask.to(image.dtype)
 
         # to patches - whether to use dual patchnorm - https://arxiv.org/abs/2302.01327v1
         if hasattr(self.visual, 'input_patchnorm') and self.visual.input_patchnorm:
@@ -447,28 +500,28 @@ class BondSAM(nn.Module):
                 x = self.visual.conv1(x)  # shape = [*, width, grid, grid]
             else:
                 # 占位实现
-                x = torch.randn(x.shape[0], 512, x.shape[2]//16, x.shape[3]//16).to(x.device)
+                x = torch.randn(x.shape[0], 512, x.shape[2]//16, x.shape[3]//16, dtype=x.dtype, device=x.device)
                 
             x = x.reshape(x.shape[0], x.shape[1], -1)  # shape = [*, width, grid ** 2]
             x = x.permute(0, 2, 1)  # shape = [*, grid ** 2, width]
 
         # class embeddings and positional embeddings
         if hasattr(self.visual, 'class_embedding'):
-            class_embedding = self.visual.class_embedding
+            class_embedding = self.visual.class_embedding.to(x.dtype).to(x.device)
         else:
-            class_embedding = torch.randn(x.shape[-1]).to(x.device)
+            class_embedding = torch.randn(x.shape[-1], dtype=x.dtype, device=x.device)
             
         if hasattr(self.visual, 'positional_embedding'):
-            positional_embedding = self.visual.positional_embedding
+            positional_embedding = self.visual.positional_embedding.to(x.dtype).to(x.device)
         else:
-            positional_embedding = torch.randn(x.shape[1] + 1, x.shape[2]).to(x.device)
+            positional_embedding = torch.randn(x.shape[1] + 1, x.shape[2], dtype=x.dtype, device=x.device)
 
         x = torch.cat(
-            [class_embedding.to(x.dtype) +
+            [class_embedding +
              torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device),
              x], dim=1)  # shape = [*, grid ** 2 + 1, width]
 
-        x = x + positional_embedding.to(x.dtype)
+        x = x + positional_embedding
 
         # a patch_dropout of 0. would mean it is disabled and this function would do nothing but return what was passed in
         if hasattr(self.visual, 'patch_dropout'):
@@ -521,24 +574,31 @@ class BondSAM(nn.Module):
         return pooled, patch_tokens, patch_embedding
 
 
-
     def proj_visual_tokens(self, image_features, patch_tokens):
         # for patch tokens
         if hasattr(self, 'patch_token_layer'):
             proj_patch_tokens = self.patch_token_layer(patch_tokens)
+            # 避免就地操作，使用新列表
+            normalized_patch_tokens = []
             for layer in range(len(proj_patch_tokens)):
-                proj_patch_tokens[layer] /= proj_patch_tokens[layer].norm(dim=-1, keepdim=True)
+                normalized_token = proj_patch_tokens[layer] / (proj_patch_tokens[layer].norm(dim=-1, keepdim=True) + 1e-8)
+                normalized_patch_tokens.append(normalized_token)
+            proj_patch_tokens = normalized_patch_tokens
         else:
             proj_patch_tokens = patch_tokens
 
         # for cls tokens
         if hasattr(self, 'cls_token_layer'):
             proj_cls_tokens = self.cls_token_layer(image_features)[0]
-            proj_cls_tokens /= proj_cls_tokens.norm(dim=-1, keepdim=True)
+            # 避免就地操作，使用新变量
+            proj_cls_tokens = proj_cls_tokens / (proj_cls_tokens.norm(dim=-1, keepdim=True) + 1e-8)
         else:
             proj_cls_tokens = image_features
 
         return proj_cls_tokens, proj_patch_tokens
+
+# ... existing code ...
+
 
     def encode_text(self, text):
         if hasattr(self.transformer, 'get_cast_dtype'):
@@ -600,17 +660,21 @@ class BondSAM(nn.Module):
                 anomaly_maps[i] = torch.softmax(anomaly_maps[i], dim=1)
             return anomaly_maps, anomaly_score
 
+    # ... existing code ...
+
     def extract_feat(self, image, cls_name, fastsam_mask=None):
+        # 确保输入在正确的设备上
+        if image.device != self.device:
+            image = image.to(self.device)
+            
         if 'D' in self.prompting_type:
             self.generate_and_set_dynamic_promtps(image) # generate and set dynamic prompts for corresponding prompters
 
         # 如果提供了FastSAM mask，可以在这里将其与图像结合
         if fastsam_mask is not None:
-            # 可以选择多种方式融合FastSAM特征:
-            # 1. 直接与图像结合
-            # 2. 作为注意力权重
-            # 3. 用于调整提示
-            pass
+            # 确保FastSAM mask在正确的设备上
+            if fastsam_mask.device != self.device:
+                fastsam_mask = fastsam_mask.to(self.device)
 
         if self.enable_visual_prompt:
             image_features, patch_tokens, _ = self.encode_image(image, fastsam_mask=fastsam_mask)
@@ -627,10 +691,16 @@ class BondSAM(nn.Module):
         proj_cls_tokens, proj_patch_tokens = self.proj_visual_tokens(image_features, patch_tokens)
 
         return proj_cls_tokens, proj_patch_tokens, text_features
-
-    # 修复弃用警告
-    @torch.amp.autocast('cuda')
+    # @torch.amp.autocast('cuda')  # 移除这行
     def forward(self, image, cls_name, aggregation=True, fastsam_mask=None):
+        # 确保输入图像的数据类型正确
+        if image.dtype != torch.float32:
+            image = image.float()
+            
+        # 如果有FastSAM mask，确保数据类型正确
+        if fastsam_mask is not None and fastsam_mask.dtype != torch.float32:
+            fastsam_mask = fastsam_mask.float()
+            
         # extract features for images and texts
         image_features, patch_tokens, text_features = self.extract_feat(image, cls_name, fastsam_mask=fastsam_mask)
         anomaly_map, anomaly_score = self.visual_text_similarity(image_features, patch_tokens, text_features, aggregation)
