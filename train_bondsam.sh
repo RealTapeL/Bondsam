@@ -1,6 +1,4 @@
-#!/bin/bash
 
-# 引线键合检测训练脚本 (使用MVTec数据集)
 python train_bondsam.py \
   --training_data mvtec \
   --testing_data mvtec \

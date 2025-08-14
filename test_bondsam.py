@@ -71,8 +71,7 @@ setup_seed(111)
 def test_bondsam(args):
     # 确认预训练模型的路径是否有效
     assert os.path.isfile(args.ckt_path), f"Please check the path of pre-trained model, {args.ckt_path} is not valid."
-
-    # Configurations
+    
     batch_size = args.batch_size
     image_size = args.image_size
     device = args.device if args.device else ('cuda' if torch.cuda.is_available() else 'cpu')
@@ -81,26 +80,57 @@ def test_bondsam(args):
 
     # Logger
     logger = Logger('bondsam_test_log.txt')
-
-    # Print basic information
     for key, value in sorted(vars(args).items()):
         logger.info(f'{key} = {value}')
-
     config_path = os.path.join('./model_configs', f'{args.model}.json')
 
-    # Prepare model
+
     try:
         with open(config_path, 'r') as f:
             model_configs = json.load(f)
     except FileNotFoundError:
-        # 创建默认配置
-        model_configs = {
-            "embed_dim": 768,
-            "vision_cfg": {
-                "width": 768,
-                "layers": 12
+        # 创建默认配置，需要与训练时使用的配置一致
+        # 根据模型名称设置不同的默认配置
+        if args.model == "ViT-L-14":
+            model_configs = {
+                "embed_dim": 768,
+                "vision_cfg": {
+                    "width": 1024,
+                    "layers": 24
+                },
+                "text_cfg": {
+                    "width": 768,
+                    "layers": 12
+                }
             }
-        }
+        elif args.model == "ViT-L-14-336":
+            model_configs = {
+                "embed_dim": 768,
+                "vision_cfg": {
+                    "width": 1024,
+                    "layers": 24
+                },
+                "text_cfg": {
+                    "width": 768,
+                    "layers": 12
+                }
+            }
+        else:  # ViT-B-16 or ViT-B-32
+            model_configs = {
+                "embed_dim": 512,
+                "vision_cfg": {
+                    "width": 768,
+                    "layers": 12
+                },
+                "text_cfg": {
+                    "width": 512,
+                    "layers": 12
+                }
+            }
+
+    # 更新模型配置中的图像尺寸
+    if 'vision_cfg' in model_configs:
+        model_configs['vision_cfg']['image_size'] = image_size
 
     # Set up the feature hierarchy
     n_layers = model_configs['vision_cfg']['layers']
@@ -124,8 +154,9 @@ def test_bondsam(args):
         k_clusters=args.k_clusters,
         use_fastsam=True  # 强制启用FastSAM用于引线键合检测
     ).to(device)
+# ... existing code ...
+    
 
-    model.load(args.ckt_path)
 
     if args.testing_model == 'dataset':
         assert args.testing_data in dataset_dict.keys(), f"You entered {args.testing_data}, but we only support " \
@@ -177,7 +208,14 @@ def test_bondsam(args):
         ori_image = cv2.resize(cv2.imread(args.image_path), (args.image_size, args.image_size))
         pil_img = Image.open(args.image_path).convert('RGB')
 
-        img_input = model.preprocess(pil_img).unsqueeze(0)
+        img_input = model.preprocess(pil_img)
+        if not isinstance(img_input, torch.Tensor):
+
+            from torchvision import transforms
+            to_tensor = transforms.ToTensor()
+            img_input = to_tensor(img_input)
+        
+        img_input = img_input.unsqueeze(0)
         img_input = img_input.to(model.device)
 
         # 为单张图像生成FastSAM mask

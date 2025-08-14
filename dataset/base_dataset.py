@@ -41,6 +41,7 @@ class BaseDataset(data.Dataset):
         self.data_all = []
         self.cls_names = clsnames
 
+        # 初始化FastSAM处理器（如果需要）
         if self.use_fastsam:
             try:
                 from method.fastsam_processor import create_fastsam_processor
@@ -52,7 +53,7 @@ class BaseDataset(data.Dataset):
         solver = DataSolver(root, clsnames)
         meta_info = solver.run()
 
-        self.meta_info = meta_info['test']
+        self.meta_info = meta_info['test']  # Only utilize the test dataset for both training and testing
         for cls_name in self.cls_names:
             self.data_all.extend(self.meta_info[cls_name])
 
@@ -64,6 +65,7 @@ class BaseDataset(data.Dataset):
     def combine_img(self, cls_name):
         """
         From April-GAN: https://github.com/ByChelsea/VAND-APRIL-GAN
+        Here we combine four images into a single image for data augmentation.
         """
         img_info = random.sample(self.meta_info[cls_name], 4)
 
@@ -85,6 +87,7 @@ class BaseDataset(data.Dataset):
 
             mask_ls.append(img_mask)
 
+        # Image
         image_width, image_height = img_ls[0].size
         result_image = Image.new("RGB", (2 * image_width, 2 * image_height))
         for i, img in enumerate(img_ls):
@@ -94,6 +97,7 @@ class BaseDataset(data.Dataset):
             y = row * image_height
             result_image.paste(img, (x, y))
 
+        # Mask
         result_mask = Image.new("L", (2 * image_width, 2 * image_height))
         for i, img in enumerate(mask_ls):
             row = i // 2
@@ -129,48 +133,62 @@ class BaseDataset(data.Dataset):
                 else:
                     img_mask = Image.fromarray(np.zeros((img.size[0], img.size[1])), mode='L')
         
+        # 使用FastSAM生成分割mask特征
         fastsam_mask = None
         if self.use_fastsam:
             try:
                 if self.fastsam_processor is not None:
                     fastsam_mask = self.fastsam_processor.process_image(img_path)
+                    # 转换为PyTorch张量
                     fastsam_mask = torch.from_numpy(fastsam_mask).float()
+                    # 添加通道维度
                     if fastsam_mask.dim() == 2:
                         fastsam_mask = fastsam_mask.unsqueeze(0)
                 else:
+                    # 如果没有FastSAM处理器，使用默认mask
                     fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
             except Exception as e:
+                # 如果FastSAM处理失败，创建一个默认的mask
                 fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
         else:
+            # 如果不使用FastSAM，创建一个默认的mask
             fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
         
+        # Transforms
+        # 处理图像 - 确保总是转换为张量
         try:
             if self.transform is not None:
                 img = self.transform(img)
             else:
+                # 如果没有提供transform，使用默认的
                 default_transform = transforms.Compose([
                     transforms.Resize((224, 224)),
                     transforms.ToTensor()
                 ])
                 img = default_transform(img)
         except Exception as e:
+            # 使用默认转换作为后备
             default_transform = transforms.Compose([
                 transforms.Resize((224, 224)),
                 transforms.ToTensor()
             ])
             img = default_transform(img)
             
+        # 确保img是张量
         if not isinstance(img, torch.Tensor):
             try:
                 to_tensor = transforms.ToTensor()
                 img = to_tensor(img)
             except Exception as e:
+                # 最后的后备方案
                 img = torch.zeros((3, 224, 224), dtype=torch.float32)
             
+        # 处理ground truth mask
         try:
             if self.target_transform is not None and img_mask is not None:
                 img_mask = self.target_transform(img_mask)
             elif img_mask is not None:
+                # 如果没有提供target_transform，使用默认的
                 default_target_transform = transforms.Compose([
                     transforms.Resize((224, 224)),
                     transforms.ToTensor()
@@ -179,18 +197,22 @@ class BaseDataset(data.Dataset):
             else:
                 img_mask = torch.zeros((1, 224, 224), dtype=torch.float32)
         except Exception as e:
+            # 使用默认转换作为后备
             default_target_transform = transforms.Compose([
                 transforms.Resize((224, 224)),
                 transforms.ToTensor()
             ])
             img_mask = default_target_transform(img_mask) if img_mask is not None else torch.zeros((1, 224, 224), dtype=torch.float32)
 
+        # 确保fastsam_mask是张量
         if fastsam_mask is None:
             fastsam_mask = torch.ones((1, 224, 224), dtype=torch.float32) * 0.5
 
+        # 确保anomaly是张量
         if not isinstance(anomaly, torch.Tensor):
             anomaly = torch.tensor(anomaly, dtype=torch.float32)
 
+        # 确保所有返回值都是张量
         if not isinstance(img, torch.Tensor):
             img = torch.zeros((3, 224, 224), dtype=torch.float32)
         if not isinstance(img_mask, torch.Tensor):
@@ -201,10 +223,10 @@ class BaseDataset(data.Dataset):
             anomaly = torch.tensor(0, dtype=torch.float32)
 
         return {
-            'img': img,
-            'img_mask': img_mask,
-            'cls_name': cls_name,
-            'anomaly': anomaly,
-            'img_path': img_path,
-            'fastsam_mask': fastsam_mask
+            'img': img,              # 主图像 (转换为张量)
+            'img_mask': img_mask,    # 真实mask (转换为张量)
+            'cls_name': cls_name,    # 类别名称
+            'anomaly': anomaly,      # 是否异常 (转换为张量)
+            'img_path': img_path,    # 图像路径
+            'fastsam_mask': fastsam_mask  # FastSAM分割mask (转换为张量)
         }

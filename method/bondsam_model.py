@@ -60,7 +60,6 @@ class PromptLayer(nn.Module):
 
     def set_dynamic_prompts(self, dynamic_prompts):
         self.dynamic_prompts = dynamic_prompts
-
     def forward_text(self, resblock, indx, x, k_x=None, v_x=None, attn_mask: Optional[torch.Tensor] = None):
         if self.enabled:
             length = self.length
@@ -87,20 +86,53 @@ class PromptLayer(nn.Module):
                     print('You should at least choose one type of prompts when the prompting branches are not none.')
                     raise NotImplementedError
 
-            if indx == 0:  # for the first layer
-                x = x
-            else:
-                if indx < self.depth:  # replace with learnalbe tokens
-                    prefix = x[:1, :, :]
-                    suffix = x[1 + length:, :, :]
-                    # 确保textual_context是正确的类型和形状
-                    if isinstance(textual_context, torch.Tensor):
-                        textual_context = textual_context.permute(1, 0, 2).half()
-                    else:
-                        textual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
-                    x = torch.cat([prefix, textual_context, suffix], dim=0)
-                else:  # keep the same
+                if indx == 0:  # for the first layer
                     x = x
+                else:
+                    if indx < self.depth:  # replace with learnalbe tokens
+                        prefix = x[:1, :, :]
+                        suffix = x[1 + length:, :, :]
+                        # 确保textual_context是正确的类型和形状
+                        if isinstance(textual_context, torch.Tensor):
+                            # 确保textual_context的维度与x匹配
+                            if textual_context.dim() != 3:
+                                textual_context = textual_context.unsqueeze(0) if textual_context.dim() == 2 else textual_context
+                            
+                            # 确保所有维度都匹配
+                            # 首先处理序列长度维度（第0维）
+                            if textual_context.shape[0] != length:
+                                if textual_context.shape[0] > length:
+                                    textual_context = textual_context[:length, :, :]
+                                else:
+                                    # 用零填充到正确的长度
+                                    padding = torch.zeros(length - textual_context.shape[0], textual_context.shape[1], textual_context.shape[2],
+                                                        dtype=textual_context.dtype, device=textual_context.device)
+                                    textual_context = torch.cat([textual_context, padding], dim=0)
+                            
+                            # 处理batch维度（第1维）
+                            if textual_context.shape[1] != x.shape[1]:
+                                if textual_context.shape[1] > x.shape[1]:
+                                    textual_context = textual_context[:, :x.shape[1], :]
+                                else:
+                                    # 用零填充到正确的batch大小
+                                    padding = torch.zeros(textual_context.shape[0], x.shape[1] - textual_context.shape[1], textual_context.shape[2],
+                                                        dtype=textual_context.dtype, device=textual_context.device)
+                                    textual_context = torch.cat([textual_context, padding], dim=1)
+                            
+                            # 处理特征维度（第2维）
+                            if textual_context.shape[2] != x.shape[2]:
+                                if textual_context.shape[2] > x.shape[2]:
+                                    textual_context = textual_context[:, :, :x.shape[2]]
+                                else:
+                                    # 用零填充到正确的特征维度
+                                    padding = torch.zeros(textual_context.shape[0], textual_context.shape[1], x.shape[2] - textual_context.shape[2],
+                                                        dtype=textual_context.dtype, device=textual_context.device)
+                                    textual_context = torch.cat([textual_context, padding], dim=2)
+                            
+                            textual_context = textual_context.permute(1, 0, 2).half()
+                        else:
+                            textual_context = torch.zeros(x.shape[1], length, x.shape[2], dtype=x.dtype, device=x.device)
+                        x = torch.cat([prefix, textual_context, suffix], dim=0)
         else:
             x = x
 
@@ -134,30 +166,102 @@ class PromptLayer(nn.Module):
                     print('You should at least choose one type of prompts when the prompting branches are not none.')
                     raise NotImplementedError
 
-            if indx == 0:  # for the first layer
-                # 确保visual_context是正确的类型和形状
-                if isinstance(visual_context, torch.Tensor):
-                    visual_context = visual_context.permute(1, 0, 2).half()
-                else:
-                    visual_context = torch.zeros(x.shape[0], length, x.shape[2], dtype=x.dtype, device=x.device)
-                x = torch.cat([x, visual_context], dim=0)
-            else:
-                if indx < self.depth:  # replace with learnalbe tokens
-                    prefix = x[0:x.shape[0] - length, :, :]
+                if indx == 0:  # for the first layer
                     # 确保visual_context是正确的类型和形状
                     if isinstance(visual_context, torch.Tensor):
+                        # 确保visual_context的维度与x匹配
+                        if visual_context.dim() != 3:
+                            # 如果不是3D张量，尝试调整维度
+                            if visual_context.dim() == 2:
+                                visual_context = visual_context.unsqueeze(1)
+                        
+                        # 确保所有维度都匹配
+                        # 处理序列长度维度（第0维）
+                        if visual_context.shape[0] != x.shape[0]:
+                            if visual_context.shape[0] > x.shape[0]:
+                                visual_context = visual_context[:x.shape[0], :, :]
+                            else:
+                                # 用零填充到正确的长度
+                                padding = torch.zeros(x.shape[0] - visual_context.shape[0], visual_context.shape[1], visual_context.shape[2],
+                                                    dtype=visual_context.dtype, device=visual_context.device)
+                                visual_context = torch.cat([visual_context, padding], dim=0)
+                        
+                        # 处理提示长度维度（第1维）
+                        if visual_context.shape[1] != length:
+                            if visual_context.shape[1] > length:
+                                visual_context = visual_context[:, :length, :]
+                            else:
+                                # 用零填充到正确的提示长度
+                                padding = torch.zeros(visual_context.shape[0], length - visual_context.shape[1], visual_context.shape[2],
+                                                    dtype=visual_context.dtype, device=visual_context.device)
+                                visual_context = torch.cat([visual_context, padding], dim=1)
+                        
+                        # 处理特征维度（第2维）
+                        if visual_context.shape[2] != x.shape[2]:
+                            if visual_context.shape[2] > x.shape[2]:
+                                visual_context = visual_context[:, :, :x.shape[2]]
+                            else:
+                                # 用零填充到正确的特征维度
+                                padding = torch.zeros(visual_context.shape[0], visual_context.shape[1], x.shape[2] - visual_context.shape[2],
+                                                    dtype=visual_context.dtype, device=visual_context.device)
+                                visual_context = torch.cat([visual_context, padding], dim=2)
+                        
                         visual_context = visual_context.permute(1, 0, 2).half()
                     else:
                         visual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
-                    x = torch.cat([prefix, visual_context], dim=0)
-                else:  # keep the same
-                    x = x
-        else:
-            x = x
+                    x = torch.cat([x, visual_context], dim=0)
+                else:
+                    if indx < self.depth:  # replace with learnalbe tokens
+                        prefix = x[0:x.shape[0] - length, :, :]
+                        # 确保visual_context是正确的类型和形状
+                        if isinstance(visual_context, torch.Tensor):
+                            # 确保visual_context的维度与x匹配
+                            if visual_context.dim() != 3:
+                                # 如果不是3D张量，尝试调整维度
+                                if visual_context.dim() == 2:
+                                    visual_context = visual_context.unsqueeze(1)
+                            
+                            # 确保所有维度都匹配
+                            # 处理序列长度维度（第0维）
+                            if visual_context.shape[0] != length:
+                                if visual_context.shape[0] > length:
+                                    visual_context = visual_context[:length, :, :]
+                                else:
+                                    # 用零填充到正确的长度
+                                    padding = torch.zeros(length - visual_context.shape[0], visual_context.shape[1], visual_context.shape[2],
+                                                        dtype=visual_context.dtype, device=visual_context.device)
+                                    visual_context = torch.cat([visual_context, padding], dim=0)
+                            
+                            # 处理batch维度（第1维）
+                            if visual_context.shape[1] != x.shape[1]:
+                                if visual_context.shape[1] > x.shape[1]:
+                                    visual_context = visual_context[:, :x.shape[1], :]
+                                else:
+                                    # 用零填充到正确的batch大小
+                                    padding = torch.zeros(visual_context.shape[0], x.shape[1] - visual_context.shape[1], visual_context.shape[2],
+                                                        dtype=visual_context.dtype, device=visual_context.device)
+                                    visual_context = torch.cat([visual_context, padding], dim=1)
+                            
+                            # 处理特征维度（第2维）
+                            if visual_context.shape[2] != x.shape[2]:
+                                if visual_context.shape[2] > x.shape[2]:
+                                    visual_context = visual_context[:, :, :x.shape[2]]
+                                else:
+                                    # 用零填充到正确的特征维度
+                                    padding = torch.zeros(visual_context.shape[0], visual_context.shape[1], x.shape[2] - visual_context.shape[2],
+                                                        dtype=visual_context.dtype, device=visual_context.device)
+                                    visual_context = torch.cat([visual_context, padding], dim=2)
+                            
+                            visual_context = visual_context.permute(1, 0, 2).half()
+                        else:
+                            visual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
+                        x = torch.cat([prefix, visual_context], dim=0)
+                    else:  # keep the same
+                        x = x
 
         x, attn_tmp = resblock(q_x=x, k_x=k_x, v_x= v_x, attn_mask=attn_mask)
 
-        if self.enabled:
+        if self.enabled and indx < self.depth:
             tokens = x[:x.shape[0] - length, :, :]
         else:
             tokens = x
