@@ -1,6 +1,4 @@
-#!/bin/bash
 
-# 引线键合检测测试脚本 (使用CPU)
 python test_bondsam.py \
   --testing_model image \
   --ckt_path /home/ps/few-shot-research/Bondsam/checkpoint.pth_best.pth \

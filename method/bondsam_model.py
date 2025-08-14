@@ -8,6 +8,7 @@ try:
     from sklearn.cluster import KMeans
 except ImportError:
     KMeans = None
+
 class ProjectLayer(nn.Module):
     def __init__(self, input_dim, output_dim, num_replicas, stack=False, is_array=True):
         super(ProjectLayer, self).__init__()
@@ -21,11 +22,11 @@ class ProjectLayer(nn.Module):
         out_tokens = []
         for i in range(self.num_replicas):
             if self.is_array:
-                temp = self.head[i](tokens[i][:, 1:, :]) # for ViT, we exclude the class token and only extract patch tokens here.
+                temp = self.head[i](tokens[i][:, 1:, :])
             else:
                 temp = self.head[i](tokens)
 
-            temp_normalized = temp / (temp.norm(dim=-1, keepdim=True) + 1e-8)  # 添加小值避免除零
+            temp_normalized = temp / (temp.norm(dim=-1, keepdim=True) + 1e-8)
             out_tokens.append(temp_normalized)
 
         if self.stack:
@@ -37,17 +38,16 @@ class PromptLayer(nn.Module):
     def __init__(self, channel, length, depth, is_text, prompting_type, enabled=True):
         super(PromptLayer, self).__init__()
 
-        self.channel = channel  # 通道数
-        self.length = length  # 提示长度
-        self.depth = depth  # 深度
-        self.is_text = is_text  # 是否是文本
-        self.enabled = enabled  # 是否启用提示
+        self.channel = channel
+        self.length = length
+        self.depth = depth
+        self.is_text = is_text
+        self.enabled = enabled
 
-        self.prompting_type = prompting_type  # 提示类型
+        self.prompting_type = prompting_type
 
-        if self.enabled: # only when enabled, the parameters should be constructed
-            if 'S' in prompting_type: # static prompts
-                # learnable
+        if self.enabled:
+            if 'S' in prompting_type:
                 self.static_prompts = nn.ParameterList(
                     [nn.Parameter(torch.empty(self.length, self.channel))
                      for _ in range(self.depth)])
@@ -55,76 +55,65 @@ class PromptLayer(nn.Module):
                 for single_para in self.static_prompts:
                     nn.init.normal_(single_para, std=0.02)
 
-            if 'D' in prompting_type: # dynamic prompts
-                self.dynamic_prompts = [0.] # place holder
+            if 'D' in prompting_type:
+                self.dynamic_prompts = [0.]
 
     def set_dynamic_prompts(self, dynamic_prompts):
         self.dynamic_prompts = dynamic_prompts
+
     def forward_text(self, resblock, indx, x, k_x=None, v_x=None, attn_mask: Optional[torch.Tensor] = None):
         if self.enabled:
             length = self.length
 
-            # only prompt the first J layers
             if indx < self.depth:
-                if 'S' in self.prompting_type and 'D' in self.prompting_type: # both
+                if 'S' in self.prompting_type and 'D' in self.prompting_type:
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
-                    # 确保dynamic_prompts是张量
                     if isinstance(self.dynamic_prompts, list):
                         textual_context = static_prompts
                     else:
                         textual_context = self.dynamic_prompts + static_prompts
-                elif 'S' in self.prompting_type:  # static
+                elif 'S' in self.prompting_type:
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
                     textual_context = static_prompts
-                elif 'D' in self.prompting_type:  # dynamic
-                    # 确保dynamic_prompts是张量
+                elif 'D' in self.prompting_type:
                     if not isinstance(self.dynamic_prompts, list):
                         textual_context = self.dynamic_prompts
                     else:
-                        textual_context = torch.zeros_like(x[:1, :, :])  # 默认值
+                        textual_context = torch.zeros_like(x[:1, :, :])
                 else:
                     print('You should at least choose one type of prompts when the prompting branches are not none.')
                     raise NotImplementedError
 
-                if indx == 0:  # for the first layer
+                if indx == 0:
                     x = x
                 else:
-                    if indx < self.depth:  # replace with learnalbe tokens
+                    if indx < self.depth:
                         prefix = x[:1, :, :]
                         suffix = x[1 + length:, :, :]
-                        # 确保textual_context是正确的类型和形状
                         if isinstance(textual_context, torch.Tensor):
-                            # 确保textual_context的维度与x匹配
                             if textual_context.dim() != 3:
                                 textual_context = textual_context.unsqueeze(0) if textual_context.dim() == 2 else textual_context
                             
-                            # 确保所有维度都匹配
-                            # 首先处理序列长度维度（第0维）
                             if textual_context.shape[0] != length:
                                 if textual_context.shape[0] > length:
                                     textual_context = textual_context[:length, :, :]
                                 else:
-                                    # 用零填充到正确的长度
                                     padding = torch.zeros(length - textual_context.shape[0], textual_context.shape[1], textual_context.shape[2],
                                                         dtype=textual_context.dtype, device=textual_context.device)
                                     textual_context = torch.cat([textual_context, padding], dim=0)
                             
-                            # 处理batch维度（第1维）
                             if textual_context.shape[1] != x.shape[1]:
                                 if textual_context.shape[1] > x.shape[1]:
                                     textual_context = textual_context[:, :x.shape[1], :]
                                 else:
-                                    # 用零填充到正确的batch大小
                                     padding = torch.zeros(textual_context.shape[0], x.shape[1] - textual_context.shape[1], textual_context.shape[2],
                                                         dtype=textual_context.dtype, device=textual_context.device)
                                     textual_context = torch.cat([textual_context, padding], dim=1)
                             
-                            # 处理特征维度（第2维）
                             if textual_context.shape[2] != x.shape[2]:
                                 if textual_context.shape[2] > x.shape[2]:
                                     textual_context = textual_context[:, :, :x.shape[2]]
                                 else:
-                                    # 用零填充到正确的特征维度
                                     padding = torch.zeros(textual_context.shape[0], textual_context.shape[1], x.shape[2] - textual_context.shape[2],
                                                         dtype=textual_context.dtype, device=textual_context.device)
                                     textual_context = torch.cat([textual_context, padding], dim=2)
@@ -136,7 +125,7 @@ class PromptLayer(nn.Module):
         else:
             x = x
 
-        x, attn_tmp = resblock(q_x=x, k_x=k_x, v_x= v_x, attn_mask=attn_mask)
+        x, attn_tmp = resblock(q_x=x, k_x=k_x, v_x=v_x, attn_mask=attn_mask)
 
         return x, attn_tmp
 
@@ -144,64 +133,51 @@ class PromptLayer(nn.Module):
         if self.enabled:
             length = self.length
 
-            # only prompt the first J layers
             if indx < self.depth:
-                if 'S' in self.prompting_type and 'D' in self.prompting_type: # both
+                if 'S' in self.prompting_type and 'D' in self.prompting_type:
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
-                    # 确保dynamic_prompts是张量
                     if isinstance(self.dynamic_prompts, list):
                         visual_context = static_prompts
                     else:
                         visual_context = self.dynamic_prompts + static_prompts
-                elif 'S' in self.prompting_type:  # static
+                elif 'S' in self.prompting_type:
                     static_prompts = self.static_prompts[indx].unsqueeze(0).expand(x.shape[1], -1, -1)
                     visual_context = static_prompts
-                elif 'D' in self.prompting_type:  # dynamic
-                    # 确保dynamic_prompts是张量
+                elif 'D' in self.prompting_type:
                     if not isinstance(self.dynamic_prompts, list):
                         visual_context = self.dynamic_prompts
                     else:
-                        visual_context = torch.zeros_like(x[:1, :, :])  # 默认值
+                        visual_context = torch.zeros_like(x[:1, :, :])
                 else:
                     print('You should at least choose one type of prompts when the prompting branches are not none.')
                     raise NotImplementedError
 
-                if indx == 0:  # for the first layer
-                    # 确保visual_context是正确的类型和形状
+                if indx == 0:
                     if isinstance(visual_context, torch.Tensor):
-                        # 确保visual_context的维度与x匹配
                         if visual_context.dim() != 3:
-                            # 如果不是3D张量，尝试调整维度
                             if visual_context.dim() == 2:
                                 visual_context = visual_context.unsqueeze(1)
                         
-                        # 确保所有维度都匹配
-                        # 处理序列长度维度（第0维）
                         if visual_context.shape[0] != x.shape[0]:
                             if visual_context.shape[0] > x.shape[0]:
                                 visual_context = visual_context[:x.shape[0], :, :]
                             else:
-                                # 用零填充到正确的长度
                                 padding = torch.zeros(x.shape[0] - visual_context.shape[0], visual_context.shape[1], visual_context.shape[2],
                                                     dtype=visual_context.dtype, device=visual_context.device)
                                 visual_context = torch.cat([visual_context, padding], dim=0)
                         
-                        # 处理提示长度维度（第1维）
                         if visual_context.shape[1] != length:
                             if visual_context.shape[1] > length:
                                 visual_context = visual_context[:, :length, :]
                             else:
-                                # 用零填充到正确的提示长度
                                 padding = torch.zeros(visual_context.shape[0], length - visual_context.shape[1], visual_context.shape[2],
                                                     dtype=visual_context.dtype, device=visual_context.device)
                                 visual_context = torch.cat([visual_context, padding], dim=1)
                         
-                        # 处理特征维度（第2维）
                         if visual_context.shape[2] != x.shape[2]:
                             if visual_context.shape[2] > x.shape[2]:
                                 visual_context = visual_context[:, :, :x.shape[2]]
                             else:
-                                # 用零填充到正确的特征维度
                                 padding = torch.zeros(visual_context.shape[0], visual_context.shape[1], x.shape[2] - visual_context.shape[2],
                                                     dtype=visual_context.dtype, device=visual_context.device)
                                 visual_context = torch.cat([visual_context, padding], dim=2)
@@ -211,43 +187,33 @@ class PromptLayer(nn.Module):
                         visual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
                     x = torch.cat([x, visual_context], dim=0)
                 else:
-                    if indx < self.depth:  # replace with learnalbe tokens
+                    if indx < self.depth:
                         prefix = x[0:x.shape[0] - length, :, :]
-                        # 确保visual_context是正确的类型和形状
                         if isinstance(visual_context, torch.Tensor):
-                            # 确保visual_context的维度与x匹配
                             if visual_context.dim() != 3:
-                                # 如果不是3D张量，尝试调整维度
                                 if visual_context.dim() == 2:
                                     visual_context = visual_context.unsqueeze(1)
                             
-                            # 确保所有维度都匹配
-                            # 处理序列长度维度（第0维）
                             if visual_context.shape[0] != length:
                                 if visual_context.shape[0] > length:
                                     visual_context = visual_context[:length, :, :]
                                 else:
-                                    # 用零填充到正确的长度
                                     padding = torch.zeros(length - visual_context.shape[0], visual_context.shape[1], visual_context.shape[2],
                                                         dtype=visual_context.dtype, device=visual_context.device)
                                     visual_context = torch.cat([visual_context, padding], dim=0)
                             
-                            # 处理batch维度（第1维）
                             if visual_context.shape[1] != x.shape[1]:
                                 if visual_context.shape[1] > x.shape[1]:
                                     visual_context = visual_context[:, :x.shape[1], :]
                                 else:
-                                    # 用零填充到正确的batch大小
                                     padding = torch.zeros(visual_context.shape[0], x.shape[1] - visual_context.shape[1], visual_context.shape[2],
                                                         dtype=visual_context.dtype, device=visual_context.device)
                                     visual_context = torch.cat([visual_context, padding], dim=1)
                             
-                            # 处理特征维度（第2维）
                             if visual_context.shape[2] != x.shape[2]:
                                 if visual_context.shape[2] > x.shape[2]:
                                     visual_context = visual_context[:, :, :x.shape[2]]
                                 else:
-                                    # 用零填充到正确的特征维度
                                     padding = torch.zeros(visual_context.shape[0], visual_context.shape[1], x.shape[2] - visual_context.shape[2],
                                                         dtype=visual_context.dtype, device=visual_context.device)
                                     visual_context = torch.cat([visual_context, padding], dim=2)
@@ -256,10 +222,10 @@ class PromptLayer(nn.Module):
                         else:
                             visual_context = torch.zeros(length, x.shape[1], x.shape[2], dtype=x.dtype, device=x.device)
                         x = torch.cat([prefix, visual_context], dim=0)
-                    else:  # keep the same
+                    else:
                         x = x
 
-        x, attn_tmp = resblock(q_x=x, k_x=k_x, v_x= v_x, attn_mask=attn_mask)
+        x, attn_tmp = resblock(q_x=x, k_x=k_x, v_x=v_x, attn_mask=attn_mask)
 
         if self.enabled and indx < self.depth:
             tokens = x[:x.shape[0] - length, :, :]
@@ -274,8 +240,6 @@ class PromptLayer(nn.Module):
         else:
             return self.forward_visual(resblock, indx, x, k_x, v_x, attn_mask)
 
-# ... existing code ...
-
 class TextEmbeddingLayer(nn.Module):
     def __init__(self, fixed):
         super(TextEmbeddingLayer, self).__init__()
@@ -283,7 +247,6 @@ class TextEmbeddingLayer(nn.Module):
             from .simple_tokenizer import SimpleTokenizer as _Tokenizer
             self.tokenizer = _Tokenizer()
         except ImportError:
-            # 如果没有simple_tokenizer，使用基本的实现
             self.tokenizer = None
         self.ensemble_text_features = {}
         self.prompt_normal = ['{}', 'flawless {}', 'perfect {}', 'unblemished {}', '{} without flaw',
@@ -304,7 +267,7 @@ class TextEmbeddingLayer(nn.Module):
             texts = [texts]
 
         sot_token = self.tokenizer.encoder["<|startoftext|>"]
-        eot_token = self.tokenizer.encoder["<|endoftext|>"]
+        eot_token = self.tokenizer.encoder[""]
         all_tokens = [[sot_token] + self.tokenizer.encode(text) + [eot_token] for text in texts]
         if packaging.version.parse(torch.__version__) < packaging.version.parse("1.8.0"):
             result = torch.zeros(len(all_tokens), context_length, dtype=torch.long)
@@ -330,12 +293,12 @@ class TextEmbeddingLayer(nn.Module):
             if self.fixed:
                 if self.ensemble_text_features.get(text) is None:
                     text_features = self.encode_text(model, text, device)
-                    self.ensemble_text_features[text] = text_features.detach()  # 添加detach()
+                    self.ensemble_text_features[text] = text_features.detach()
                 else:
                     text_features = self.ensemble_text_features[text]
             else:
                 text_features = self.encode_text(model, text, device)
-                self.ensemble_text_features[text] = text_features.detach()  # 添加detach()
+                self.ensemble_text_features[text] = text_features.detach()
 
             text_feature_list.append(text_features)
 
@@ -356,15 +319,12 @@ class TextEmbeddingLayer(nn.Module):
             if self.tokenizer:
                 prompted_sentence = self.tokenize(prompted_sentence, context_length=77).to(device)
             else:
-                # 简单的占位实现
                 prompted_sentence = torch.randint(0, 1000, (len(prompted_sentence), 77)).to(device)
 
             class_embeddings = model.encode_text(prompted_sentence)
 
-            # 避免就地操作，使用新变量
             class_embeddings_normalized = class_embeddings / (class_embeddings.norm(dim=-1, keepdim=True) + 1e-8)
             class_embedding = class_embeddings_normalized.mean(dim=0)
-            # 避免就地操作，使用新变量
             class_embedding_normalized = class_embedding / (class_embedding.norm() + 1e-8)
             text_features.append(class_embedding_normalized)
 
@@ -372,9 +332,6 @@ class TextEmbeddingLayer(nn.Module):
 
         return text_features
 
-# ... existing code ...
-
-# Note: the implementation of HSF is slightly different to the reported one, since we found that the upgraded one is more stable.
 class HybridSemanticFusion(nn.Module):
     def __init__(self, k_clusters):
         super(HybridSemanticFusion, self).__init__()
@@ -387,9 +344,8 @@ class HybridSemanticFusion(nn.Module):
 
     def forward(self, patch_tokens: list, anomaly_maps: list):
         anomaly_map = torch.mean(torch.stack(anomaly_maps, dim=1), dim=1)
-        anomaly_map = torch.softmax(anomaly_map, dim=2)[:, :, 1] # B, L
+        anomaly_map = torch.softmax(anomaly_map, dim=2)[:, :, 1]
 
-        # extract most abnormal feats
         selected_abnormal_tokens = []
         k = min(anomaly_map.shape[1], self.n_aggregate_patch_tokens)
         top_k_indices = torch.topk(anomaly_map, k=k, dim=1).indices
@@ -401,17 +357,14 @@ class HybridSemanticFusion(nn.Module):
         stacked_data = torch.cat(selected_abnormal_tokens, dim=2)
 
         batch_cluster_centers = []
-        # Perform K-Means clustering
         for b in range(stacked_data.shape[0]):
             if self.cluster_performer:
                 cluster_labels = self.cluster_performer.fit_predict(stacked_data[b, :, :].detach().cpu().numpy())
             else:
                 cluster_labels = np.zeros(stacked_data[b, :, :].shape[0])
 
-            # Initialize a list to store the cluster centers
             cluster_centers = []
 
-            # Extract cluster centers for each cluster
             for cluster_id in range(self.k_clusters):
                 collected_cluster_data = []
                 for abnormal_tokens in selected_abnormal_tokens:
@@ -422,7 +375,6 @@ class HybridSemanticFusion(nn.Module):
                     cluster_center = torch.mean(collected_cluster_data, dim=0, keepdim=True)
                     cluster_centers.append(cluster_center)
                 else:
-                    # 如果没有数据，创建零向量
                     cluster_centers.append(torch.zeros(1, selected_abnormal_tokens[0].shape[2]))
 
             if cluster_centers:
@@ -462,45 +414,37 @@ class BondSAM(nn.Module):
         self.use_hsf = use_hsf
         self.k_clusters = k_clusters
 
-        # 根据提示分支参数决定是否启用文本提示
         if 'L' in self.prompting_branch:
             self.enable_text_prompt = True
         else:
             self.enable_text_prompt = False
 
-        # 根据提示分支参数决定是否启用视觉提示
         if 'V' in self.prompting_branch:
             self.enable_visual_prompt = True
         else:
             self.enable_visual_prompt = False
 
-        # 初始化文本嵌入层
         self.text_embedding_layer = TextEmbeddingLayer(fixed=(not self.enable_text_prompt))
-        # 初始化文本提示层
         self.text_prompter = PromptLayer(text_channel, prompting_length, prompting_depth, is_text=True,
                                          prompting_type=prompting_type,
                                          enabled=self.enable_text_prompt)
-        # 初始化视觉提示层
         self.visual_prompter = PromptLayer(visual_channel, prompting_length, prompting_depth, is_text=False,
                                            prompting_type=prompting_type,
                                            enabled=self.enable_visual_prompt)
 
-        # 初始化补丁令牌层
         self.patch_token_layer = ProjectLayer(
             visual_channel,
             text_channel,
             len(output_layers), stack=False, is_array=True
         )
 
-        # 初始化CLS令牌层
         self.cls_token_layer = ProjectLayer(
             text_channel,
             text_channel,
             1, stack=False, is_array=False
         )
 
-        # 如果提示类型为动态提示，则初始化动态视觉提示生成器和动态文本提示生成器
-        if 'D' in self.prompting_type: # dynamic prompts
+        if 'D' in self.prompting_type:
             self.dynamic_visual_prompt_generator = ProjectLayer(text_channel,
                                                                 visual_channel,
                                                                 prompting_length,
@@ -512,21 +456,16 @@ class BondSAM(nn.Module):
                                                               stack=True,
                                                               is_array=False)
 
-        # 如果使用混合语义融合，则初始化混合语义融合层
         if self.use_hsf:
             self.HSF = HybridSemanticFusion(k_clusters)
         self.image_size = image_size
         self.device = device
 
-
     def generate_and_set_dynamic_promtps(self, image):
-        # 禁用梯度计算，以提高推理速度并减少内存使用
         with torch.no_grad():
-            # extract image features
             if hasattr(self.visual, 'forward'):
                 image_features, _, _ = self.visual.forward(image, self.output_layers)
             else:
-                # 占位实现
                 image_features = torch.randn(image.shape[0], 512).to(image.device)
 
         if hasattr(self, 'dynamic_visual_prompt_generator') and hasattr(self, 'dynamic_text_prompt_generator'):
@@ -537,7 +476,7 @@ class BondSAM(nn.Module):
                 self.visual_prompter.set_dynamic_prompts(dynamic_visual_prompts)
                 self.text_prompter.set_dynamic_prompts(dynamic_text_prompts)
             except:
-                pass  
+                pass
 
     def encode_image(self, image, fastsam_mask=None):
         if image.dtype != torch.float32:
@@ -552,7 +491,6 @@ class BondSAM(nn.Module):
             if fastsam_mask.device != self.device:
                 fastsam_mask = fastsam_mask.to(self.device)
                 
-            # 将FastSAM mask调整为与图像相同的尺寸
             if fastsam_mask.shape[-2:] != image.shape[-2:]:
                 fastsam_mask = F.interpolate(
                     fastsam_mask.unsqueeze(1), 
@@ -561,13 +499,10 @@ class BondSAM(nn.Module):
                     align_corners=False
                 ).squeeze(1)
             
-            # 确保FastSAM mask的数据类型与图像匹配
             if fastsam_mask.dtype != image.dtype:
                 fastsam_mask = fastsam_mask.to(image.dtype)
 
-        # to patches - whether to use dual patchnorm - https://arxiv.org/abs/2302.01327v1
         if hasattr(self.visual, 'input_patchnorm') and self.visual.input_patchnorm:
-            # einops - rearrange(x, 'b c (h p1) (w p2) -> b (h w) (c p1 p2)')
             x = x.reshape(x.shape[0], x.shape[1],
                           self.visual.grid_size[0],
                           self.visual.patch_size[0],
@@ -579,15 +514,13 @@ class BondSAM(nn.Module):
             x = self.visual.conv1(x)
         else:
             if hasattr(self.visual, 'conv1'):
-                x = self.visual.conv1(x)  # shape = [*, width, grid, grid]
+                x = self.visual.conv1(x)
             else:
-                # 占位实现
                 x = torch.randn(x.shape[0], 512, x.shape[2]//16, x.shape[3]//16, dtype=x.dtype, device=x.device)
                 
-            x = x.reshape(x.shape[0], x.shape[1], -1)  # shape = [*, width, grid ** 2]
-            x = x.permute(0, 2, 1)  # shape = [*, grid ** 2, width]
+            x = x.reshape(x.shape[0], x.shape[1], -1)
+            x = x.permute(0, 2, 1)
 
-        # class embeddings and positional embeddings
         if hasattr(self.visual, 'class_embedding'):
             class_embedding = self.visual.class_embedding.to(x.dtype).to(x.device)
         else:
@@ -601,11 +534,10 @@ class BondSAM(nn.Module):
         x = torch.cat(
             [class_embedding +
              torch.zeros(x.shape[0], 1, x.shape[-1], dtype=x.dtype, device=x.device),
-             x], dim=1)  # shape = [*, grid ** 2 + 1, width]
+             x], dim=1)
 
         x = x + positional_embedding
 
-        # a patch_dropout of 0. would mean it is disabled and this function would do nothing but return what was passed in
         if hasattr(self.visual, 'patch_dropout'):
             x = self.visual.patch_dropout(x)
         if hasattr(self.visual, 'ln_pre'):
@@ -613,7 +545,7 @@ class BondSAM(nn.Module):
 
         patch_embedding = x
 
-        x = x.permute(1, 0, 2)  # NLD -> LND
+        x = x.permute(1, 0, 2)
 
         patch_tokens = []
 
@@ -625,16 +557,14 @@ class BondSAM(nn.Module):
                     if (indx + 1) in self.output_layers:
                         patch_tokens.append(tokens)
             except:
-                # 出错时使用占位实现
                 x = x[:x.shape[0]-self.prompting_length, :, :] if self.enable_visual_prompt and hasattr(self, 'prompting_length') else x
                 patch_tokens = [x for _ in self.output_layers]
         else:
-            # 占位实现
             x = x[:x.shape[0]-self.prompting_length, :, :] if self.enable_visual_prompt and hasattr(self, 'prompting_length') else x
             patch_tokens = [x for _ in self.output_layers]
 
-        x = x.permute(1, 0, 2)  # LND -> NLD
-        patch_tokens = [patch_tokens[t].permute(1, 0, 2) for t in range(len(patch_tokens))]  # LND -> NLD
+        x = x.permute(1, 0, 2)
+        patch_tokens = [patch_tokens[t].permute(1, 0, 2) for t in range(len(patch_tokens))]
 
         if hasattr(self.visual, 'attn_pool') and self.visual.attn_pool is not None:
             x = self.visual.attn_pool(x)
@@ -645,7 +575,7 @@ class BondSAM(nn.Module):
             if hasattr(self.visual, '_global_pool'):
                 pooled, tokens = self.visual._global_pool(x)
             else:
-                pooled = x[:, 0, :]  # 简单地使用第一个token作为pooled
+                pooled = x[:, 0, :]
                 
             if hasattr(self.visual, 'ln_post'):
                 pooled = self.visual.ln_post(pooled)
@@ -655,12 +585,9 @@ class BondSAM(nn.Module):
 
         return pooled, patch_tokens, patch_embedding
 
-
     def proj_visual_tokens(self, image_features, patch_tokens):
-        # for patch tokens
         if hasattr(self, 'patch_token_layer'):
             proj_patch_tokens = self.patch_token_layer(patch_tokens)
-            # 避免就地操作，使用新列表
             normalized_patch_tokens = []
             for layer in range(len(proj_patch_tokens)):
                 normalized_token = proj_patch_tokens[layer] / (proj_patch_tokens[layer].norm(dim=-1, keepdim=True) + 1e-8)
@@ -669,18 +596,13 @@ class BondSAM(nn.Module):
         else:
             proj_patch_tokens = patch_tokens
 
-        # for cls tokens
         if hasattr(self, 'cls_token_layer'):
             proj_cls_tokens = self.cls_token_layer(image_features)[0]
-            # 避免就地操作，使用新变量
             proj_cls_tokens = proj_cls_tokens / (proj_cls_tokens.norm(dim=-1, keepdim=True) + 1e-8)
         else:
             proj_cls_tokens = image_features
 
         return proj_cls_tokens, proj_patch_tokens
-
-# ... existing code ...
-
 
     def encode_text(self, text):
         if hasattr(self.transformer, 'get_cast_dtype'):
@@ -688,19 +610,17 @@ class BondSAM(nn.Module):
         else:
             cast_dtype = torch.float32
 
-        x = self.token_embedding(text).to(cast_dtype)  # [batch_size, n_ctx, d_model]
+        x = self.token_embedding(text).to(cast_dtype)
 
         x = x + self.positional_embedding.to(cast_dtype)
-        x = x.permute(1, 0, 2)  # NLD -> LND
+        x = x.permute(1, 0, 2)
 
         for indx, r in enumerate(getattr(self.transformer, 'resblocks', [])):
-            # add prompt here
             x, attn_tmp = self.text_prompter(r, indx, x, k_x=None, v_x=None, attn_mask=self.attn_mask)
 
-        x = x.permute(1, 0, 2)  # LND -> NLD
-        x = self.ln_final(x)  # [batch_size, n_ctx, transformer.width]
+        x = x.permute(1, 0, 2)
+        x = self.ln_final(x)
 
-        # take features from the eot embedding (eot_token is the highest number in each sequence)
         x = x[torch.arange(x.shape[0]), text.argmax(dim=-1)] @ self.text_projection
         return x
 
@@ -714,7 +634,6 @@ class BondSAM(nn.Module):
         if self.use_hsf and hasattr(self, 'HSF'):
             alpha = 0.2
             clustered_feature = self.HSF.forward(patch_token, anomaly_maps)
-            # aggregate the class token and the clustered features for more comprehensive information
             cur_image_feature = alpha * clustered_feature + (1 - alpha) * image_feature
             cur_image_feature = F.normalize(cur_image_feature, dim=1)
         else:
@@ -724,20 +643,19 @@ class BondSAM(nn.Module):
         anomaly_score = anomaly_score.squeeze(1)
         anomaly_score = torch.softmax(anomaly_score, dim=1)
 
-        # NOTE: this bilinear interpolation is not unreproducible and may occasionally lead to unstable ZSAD performance.
         for i in range(len(anomaly_maps)):
             B, L, C = anomaly_maps[i].shape
             H = int(np.sqrt(L))
             anomaly_maps[i] = anomaly_maps[i].permute(0, 2, 1).view(B, 2, H, H)
             anomaly_maps[i] = F.interpolate(anomaly_maps[i], size=self.image_size, mode='bilinear', align_corners=True)
 
-        if aggregation: # in the test stage, we firstly aggregate logits from all hierarchies and then do the softmax normalization
+        if aggregation:
             anomaly_map = torch.mean(torch.stack(anomaly_maps, dim=1), dim=1)
             anomaly_map = torch.softmax(anomaly_map, dim=1)
             anomaly_map = (anomaly_map[:, 1:, :, :] + 1 - anomaly_map[:, 0:1, :, :]) / 2.0
             anomaly_score = anomaly_score[:, 1]
             return anomaly_map, anomaly_score
-        else: # otherwise, we do the softmax normalization for individual hierarchies
+        else:
             for i in range(len(anomaly_maps)):
                 anomaly_maps[i] = torch.softmax(anomaly_maps[i], dim=1)
             return anomaly_maps, anomaly_score
@@ -767,7 +685,7 @@ class BondSAM(nn.Module):
         proj_cls_tokens, proj_patch_tokens = self.proj_visual_tokens(image_features, patch_tokens)
 
         return proj_cls_tokens, proj_patch_tokens, text_features
-    # @torch.amp.autocast('cuda') 
+
     def forward(self, image, cls_name, aggregation=True, fastsam_mask=None):
         if image.dtype != torch.float32:
             image = image.float()
@@ -778,13 +696,13 @@ class BondSAM(nn.Module):
         anomaly_map, anomaly_score = self.visual_text_similarity(image_features, patch_tokens, text_features, aggregation)
 
         if aggregation:
-            anomaly_map = anomaly_map # tensor
+            anomaly_map = anomaly_map
             anomaly_score = anomaly_score
             anomaly_map = anomaly_map.squeeze(1)
 
             return anomaly_map, anomaly_score
         else:
-            anomaly_maps = anomaly_map # list
+            anomaly_maps = anomaly_map
             anomaly_score = anomaly_score
 
             return anomaly_maps, anomaly_score

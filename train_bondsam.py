@@ -14,7 +14,7 @@ import torchvision.transforms as transforms
 try:
     from tools import write2csv, setup_paths, setup_seed, log_metrics, Logger
 except ImportError:
-    # 简单的替代实现
+    # Simple fallback implementation
     import logging
     class Logger:
         def __init__(self, log_path):
@@ -33,7 +33,7 @@ except ImportError:
         np.random.seed(seed)
     
     def setup_paths(args):
-        # 简单实现
+        # Simple implementation
         return "model", "./images", "./results.csv", "./log.txt", "./checkpoint.pth", None
     
     def write2csv(metric_dict, cls_names, tag, csv_path):
@@ -45,24 +45,24 @@ except ImportError:
 try:
     from dataset import get_data
 except ImportError:
-    # 占位实现
+    # Placeholder implementation
     def get_data(*args, **kwargs):
         class DummyDataset:
             def __len__(self):
                 return 10
         return ["dummy"], DummyDataset(), "/tmp"
 
-# 修复导入问题
+# Fix import issue
 try:
     from method.trainer import BondSAM_Trainer
 except ImportError:
     try:
         from method import BondSAM_Trainer
     except ImportError:
-        # 最后的备选方案
+        # Final fallback
         class BondSAM_Trainer:
             def __init__(self, *args, **kwargs):
-                raise ImportError("无法导入 BondSAM_Trainer")
+                raise ImportError("Cannot import BondSAM_Trainer")
 
 setup_seed(111)
 
@@ -94,7 +94,7 @@ def train_bondsam(args):
         with open(config_path, 'r') as f:
             model_configs = json.load(f)
     except FileNotFoundError:
-        # 创建默认配置，使用较小的维度以节省资源
+        # Create default config, use smaller dimensions to save resources
         model_configs = {
             "embed_dim": 512,
             "vision_cfg": {
@@ -108,7 +108,7 @@ def train_bondsam(args):
     substage = n_layers // 4
     features_list = [substage, substage * 2, substage * 3, substage * 4]
 
-    # 为引线键合检测专门配置模型
+    # Configure model specifically for wire bonding detection
     model = BondSAM_Trainer(
         backbone=args.model,
         feat_list=features_list,
@@ -123,7 +123,9 @@ def train_bondsam(args):
         prompting_type=args.prompting_type,
         use_hsf=args.use_hsf,
         k_clusters=args.k_clusters,
-        use_fastsam=True  # 强制启用FastSAM用于引线键合检测
+        use_fastsam=True,  # Force enable FastSAM for wire bonding detection
+        use_anomaly_attention=args.use_anomaly_attention,  # New parameter
+        use_enhanced_extractor=args.use_enhanced_extractor  # New parameter
     ).to(device)
 
     mask_transform = transforms.Compose([
@@ -137,7 +139,7 @@ def train_bondsam(args):
         transform=model.preprocess,
         target_transform=mask_transform,
         training=True,
-        use_fastsam=True  # 强制启用FastSAM
+        use_fastsam=True  # Force enable FastSAM
     )
 
     test_data_cls_names, test_data, test_data_root = get_data(
@@ -145,7 +147,7 @@ def train_bondsam(args):
         transform=model.preprocess,
         target_transform=mask_transform,
         training=False,
-        use_fastsam=True  # 强制启用FastSAM
+        use_fastsam=True  # Force enable FastSAM
     )
 
     logger.info('Data Root: training, {:}; testing, {:}'.format(train_data_root, test_data_root))
@@ -153,19 +155,19 @@ def train_bondsam(args):
     train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_dataloader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=False)
 
-    # 引线键合检测的验证策略
+    # Validation strategy for wire bonding detection
     best_f1 = -1e1
 
-    # 创建训练进度条
+    # Create training progress bar
     epoch_pbar = tqdm(range(epochs), desc="Training Progress", leave=True)
     
     for epoch in epoch_pbar:
-        # 为每个epoch创建一个进度条
+        # Create a progress bar for each epoch
         batch_pbar = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{epochs}", leave=False)
         loss = model.train_epoch_with_progress(batch_dataloader=batch_pbar)
         batch_pbar.close()
         
-        # 更新进度条描述信息
+        # Update progress bar description
         epoch_pbar.set_postfix({'Loss': f'{loss:.4f}'})
 
         # Logs
@@ -254,6 +256,12 @@ if __name__ == '__main__':
     # Device
     parser.add_argument("--device", type=str, default="cpu", choices=["cpu", "cuda"],
                         help="Device to use for training (default: 'cpu')")
+    
+    # Attention mechanisms
+    parser.add_argument("--use_anomaly_attention", type=str2bool, default=True,
+                        help="Use anomaly attention mechanism (default: True)")
+    parser.add_argument("--use_enhanced_extractor", type=str2bool, default=True,
+                        help="Use attention enhanced feature extractor (default: True)")
 
     args = parser.parse_args()
 
