@@ -245,16 +245,26 @@ def test_bondsam(args):
             anomaly_map = anomaly_map.astype(np.uint8)
 
             heat_map = cv2.applyColorMap(anomaly_map, cv2.COLORMAP_JET)
-
+            
             # 保存热力图
             save_path = os.path.join(args.save_path, args.save_name)
             print(f"Anomaly detected! Results saved in {save_path}, anomaly score: {anomaly_score:.3f}")
+            cv2.imwrite(save_path, heat_map)
             
-            # 保存叠加的异常图像（原图+热力图）
+            # 如果您想保存叠加的异常图像（原图+热力图），取消下面两行的注释
             vis_map = cv2.addWeighted(heat_map, 0.5, ori_image, 0.5, 0)
             cv2.imwrite(save_path, vis_map)
+            
+            # 方案3: 如果您想保存原始图像和结果图像的对比图，取消下面几行的注释
+            # vis_map = cv2.addWeighted(heat_map, 0.5, ori_image, 0.5, 0)
+            # combined_result = cv2.hconcat([ori_image, vis_map])
+            # cv2.imwrite(save_path, combined_result)
         else:
             print(f"No anomaly detected. Anomaly score: {anomaly_score:.3f} (threshold: {anomaly_threshold})")
+            
+            # 保存原始图像
+            save_path = os.path.join(args.save_path, args.save_name)
+            cv2.imwrite(save_path, ori_image)
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
