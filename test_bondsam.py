@@ -241,24 +241,39 @@ def test_bondsam(args):
         if anomaly_score > anomaly_threshold:
             # 只有当异常分数超过阈值时才保存图像
             anomaly_map = gaussian_filter(anomaly_map, sigma=4)
-            anomaly_map = anomaly_map * 255
-            anomaly_map = anomaly_map.astype(np.uint8)
-
-            heat_map = cv2.applyColorMap(anomaly_map, cv2.COLORMAP_JET)
             
-            # 保存热力图
+            # 设置显示热力图的阈值（例如，只在异常值大于0.7的区域显示热力图）
+            heatmap_threshold = 0.7
+            
+            # 创建一个掩码，标识异常值超过阈值的区域
+            mask = (anomaly_map > heatmap_threshold).astype(np.uint8) * 255
+            
+            # 归一化异常图到0-255范围
+            anomaly_map_normalized = ((anomaly_map - anomaly_map.min()) / 
+                                    (anomaly_map.max() - anomaly_map.min()) * 255).astype(np.uint8)
+            
+            # 应用掩码，只在异常区域显示热力图
+            anomaly_map_masked = cv2.bitwise_and(anomaly_map_normalized, mask)
+            
+            # 生成热力图
+            heat_map = cv2.applyColorMap(anomaly_map_normalized, cv2.COLORMAP_JET)
+            
+            # 只在异常区域应用热力图
+            heat_map_masked = cv2.bitwise_and(heat_map, heat_map, mask=mask)
+            
+            # 创建最终的可视化图像（原始图像+异常区域热力图）
+            vis_map = ori_image.copy()
+            # 将热力图区域叠加到原始图像上
+            vis_map = cv2.addWeighted(vis_map, 1.0, heat_map_masked, 0.7, 0)
+            
+            # 保存结果
             save_path = os.path.join(args.save_path, args.save_name)
             print(f"Anomaly detected! Results saved in {save_path}, anomaly score: {anomaly_score:.3f}")
-            cv2.imwrite(save_path, heat_map)
-            
-            # 如果您想保存叠加的异常图像（原图+热力图），取消下面两行的注释
-            vis_map = cv2.addWeighted(heat_map, 0.5, ori_image, 0.5, 0)
             cv2.imwrite(save_path, vis_map)
             
-            # 方案3: 如果您想保存原始图像和结果图像的对比图，取消下面几行的注释
-            # vis_map = cv2.addWeighted(heat_map, 0.5, ori_image, 0.5, 0)
-            # combined_result = cv2.hconcat([ori_image, vis_map])
-            # cv2.imwrite(save_path, combined_result)
+            # 同时保存掩码图像，便于查看哪些区域被标记为异常
+            mask_path = os.path.join(args.save_path, "mask_" + args.save_name)
+            cv2.imwrite(mask_path, mask)
         else:
             print(f"No anomaly detected. Anomaly score: {anomaly_score:.3f} (threshold: {anomaly_threshold})")
             
