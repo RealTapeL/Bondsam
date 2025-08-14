@@ -88,39 +88,94 @@ class PromptLayer(nn.Module):
                     x = x
                 else:
                     if indx < self.depth:
+                        # 保存原始x的形状信息
+                        original_shape = x.shape
+                        
+                        # 正确计算suffix的索引
                         prefix = x[:1, :, :]
                         suffix = x[1 + length:, :, :]
+                        
                         if isinstance(textual_context, torch.Tensor):
+                            # 确保textual_context是三维张量
                             if textual_context.dim() != 3:
                                 textual_context = textual_context.unsqueeze(0) if textual_context.dim() == 2 else textual_context
                             
+                            # 调整textual_context的形状以匹配prefix和suffix
+                            # textual_context应该有length个token
                             if textual_context.shape[0] != length:
                                 if textual_context.shape[0] > length:
                                     textual_context = textual_context[:length, :, :]
                                 else:
-                                    padding = torch.zeros(length - textual_context.shape[0], textual_context.shape[1], textual_context.shape[2],
-                                                        dtype=textual_context.dtype, device=textual_context.device)
+                                    # 添加填充
+                                    padding_shape = (length - textual_context.shape[0], textual_context.shape[1], textual_context.shape[2])
+                                    padding = torch.zeros(padding_shape, dtype=textual_context.dtype, device=textual_context.device)
                                     textual_context = torch.cat([textual_context, padding], dim=0)
                             
-                            if textual_context.shape[1] != x.shape[1]:
-                                if textual_context.shape[1] > x.shape[1]:
-                                    textual_context = textual_context[:, :x.shape[1], :]
+                            # 确保序列维度（维度1）匹配
+                            if textual_context.shape[1] != original_shape[1]:
+                                if textual_context.shape[1] > original_shape[1]:
+                                    textual_context = textual_context[:, :original_shape[1], :]
                                 else:
-                                    padding = torch.zeros(textual_context.shape[0], x.shape[1] - textual_context.shape[1], textual_context.shape[2],
-                                                        dtype=textual_context.dtype, device=textual_context.device)
+                                    # 添加填充
+                                    padding_shape = (textual_context.shape[0], original_shape[1] - textual_context.shape[1], textual_context.shape[2])
+                                    padding = torch.zeros(padding_shape, dtype=textual_context.dtype, device=textual_context.device)
                                     textual_context = torch.cat([textual_context, padding], dim=1)
                             
-                            if textual_context.shape[2] != x.shape[2]:
-                                if textual_context.shape[2] > x.shape[2]:
-                                    textual_context = textual_context[:, :, :x.shape[2]]
+                            # 确保特征维度（维度2）匹配
+                            if textual_context.shape[2] != original_shape[2]:
+                                if textual_context.shape[2] > original_shape[2]:
+                                    textual_context = textual_context[:, :, :original_shape[2]]
                                 else:
-                                    padding = torch.zeros(textual_context.shape[0], textual_context.shape[1], x.shape[2] - textual_context.shape[2],
-                                                        dtype=textual_context.dtype, device=textual_context.device)
+                                    # 添加填充
+                                    padding_shape = (textual_context.shape[0], textual_context.shape[1], original_shape[2] - textual_context.shape[2])
+                                    padding = torch.zeros(padding_shape, dtype=textual_context.dtype, device=textual_context.device)
                                     textual_context = torch.cat([textual_context, padding], dim=2)
                             
-                            textual_context = textual_context.permute(1, 0, 2).half()
+                            # 调整维度顺序以匹配x的格式
+                            textual_context = textual_context.permute(1, 0, 2)
                         else:
-                            textual_context = torch.zeros(x.shape[1], length, x.shape[2], dtype=x.dtype, device=x.device)
+                            # 创建默认的textual_context
+                            textual_context = torch.zeros(original_shape[1], length, original_shape[2], 
+                                                        dtype=x.dtype, device=x.device)
+                        
+                        # 最终确保所有张量在维度1和2上完全匹配
+                        target_seq_len = prefix.shape[1]
+                        target_feat_dim = prefix.shape[2]
+                        
+                        # 调整textual_context的维度
+                        if textual_context.shape[1] != target_seq_len:
+                            if textual_context.shape[1] > target_seq_len:
+                                textual_context = textual_context[:, :target_seq_len, :]
+                            else:
+                                padding = torch.zeros(textual_context.shape[0], target_seq_len - textual_context.shape[1], textual_context.shape[2],
+                                                    dtype=textual_context.dtype, device=textual_context.device)
+                                textual_context = torch.cat([textual_context, padding], dim=1)
+                                
+                        if textual_context.shape[2] != target_feat_dim:
+                            if textual_context.shape[2] > target_feat_dim:
+                                textual_context = textual_context[:, :, :target_feat_dim]
+                            else:
+                                padding = torch.zeros(textual_context.shape[0], textual_context.shape[1], target_feat_dim - textual_context.shape[2],
+                                                    dtype=textual_context.dtype, device=textual_context.device)
+                                textual_context = torch.cat([textual_context, padding], dim=2)
+                        
+                        # 检查suffix的维度是否匹配
+                        if suffix.shape[1] != target_seq_len:
+                            if suffix.shape[1] > target_seq_len:
+                                suffix = suffix[:, :target_seq_len, :]
+                            else:
+                                padding = torch.zeros(suffix.shape[0], target_seq_len - suffix.shape[1], suffix.shape[2],
+                                                    dtype=suffix.dtype, device=suffix.device)
+                                suffix = torch.cat([suffix, padding], dim=1)
+                                
+                        if suffix.shape[2] != target_feat_dim:
+                            if suffix.shape[2] > target_feat_dim:
+                                suffix = suffix[:, :, :target_feat_dim]
+                            else:
+                                padding = torch.zeros(suffix.shape[0], suffix.shape[1], target_feat_dim - suffix.shape[2],
+                                                    dtype=suffix.dtype, device=suffix.device)
+                                suffix = torch.cat([suffix, padding], dim=2)
+                        
                         x = torch.cat([prefix, textual_context, suffix], dim=0)
         else:
             x = x
@@ -646,6 +701,20 @@ class BondSAM(nn.Module):
         for i in range(len(anomaly_maps)):
             B, L, C = anomaly_maps[i].shape
             H = int(np.sqrt(L))
+            # 检查L是否是完全平方数，如果不是，需要进行调整
+            if H * H != L:
+                # 找到最接近的完全平方数
+                H = int(np.ceil(np.sqrt(L)))
+                # 调整anomaly_maps[i]的大小以匹配新的H
+                if H * H > L:
+                    # 需要填充
+                    padding_size = H * H - L
+                    padding = torch.zeros(B, padding_size, C, dtype=anomaly_maps[i].dtype, device=anomaly_maps[i].device)
+                    anomaly_maps[i] = torch.cat([anomaly_maps[i], padding], dim=1)
+                else:
+                    # 需要裁剪
+                    anomaly_maps[i] = anomaly_maps[i][:, :H*H, :]
+            
             anomaly_maps[i] = anomaly_maps[i].permute(0, 2, 1).view(B, 2, H, H)
             anomaly_maps[i] = F.interpolate(anomaly_maps[i], size=self.image_size, mode='bilinear', align_corners=True)
 

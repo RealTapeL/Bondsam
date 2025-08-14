@@ -1,4 +1,6 @@
 
+python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
+
 python train_bondsam.py \
   --training_data mvtec \
   --testing_data mvtec \
@@ -15,4 +17,6 @@ python train_bondsam.py \
   --use_hsf True \
   --k_clusters 20 \
   --save_path ./workspaces/bondsam_exp1 \
-  --device cuda
+  --device cuda \
+  --use_anomaly_attention True \
+  --use_enhanced_extractor True

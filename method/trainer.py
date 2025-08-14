@@ -201,6 +201,37 @@ except ImportError:
             transforms.ToTensor()
         ])
 
+# 添加导入注意力机制模块
+try:
+    from .attention import (
+        MultiHeadAttention, 
+        CBAM, 
+        CoordinateAttention, 
+        AnomalyAttention,
+        AttentionEnhancedFeatureExtractor
+    )
+except ImportError:
+    # 如果无法导入注意力模块，则创建占位符
+    class MultiHeadAttention:
+        def __init__(self, *args, **kwargs):
+            pass
+            
+    class CBAM:
+        def __init__(self, *args, **kwargs):
+            pass
+            
+    class CoordinateAttention:
+        def __init__(self, *args, **kwargs):
+            pass
+            
+    class AnomalyAttention:
+        def __init__(self, *args, **kwargs):
+            pass
+            
+    class AttentionEnhancedFeatureExtractor:
+        def __init__(self, *args, **kwargs):
+            pass
+
 import numpy as np
 import torch
 from torch import nn
@@ -218,7 +249,9 @@ class BondSAM_Trainer(nn.Module):
             prompting_depth=3, prompting_length=2,
             prompting_branch='VL', prompting_type='SD',
             use_hsf=True, k_clusters=20,
-            use_fastsam=False  # 添加FastSAM选项
+            use_fastsam=False,
+            use_anomaly_attention=False,  # 添加异常注意力机制选项
+            use_enhanced_extractor=False  # 添加增强特征提取器选项
     ):
 
         super(BondSAM_Trainer, self).__init__()
@@ -228,7 +261,9 @@ class BondSAM_Trainer(nn.Module):
         self.image_size = image_size
         self.prompting_branch = prompting_branch
         self.prompting_type = prompting_type
-        self.use_fastsam = use_fastsam  # 保存FastSAM选项
+        self.use_fastsam = use_fastsam
+        self.use_anomaly_attention = use_anomaly_attention  # 保存异常注意力机制选项
+        self.use_enhanced_extractor = use_enhanced_extractor  # 保存增强特征提取器选项
 
         self.loss_focal = FocalLoss()
         self.loss_dice = BinaryDiceLoss()
@@ -242,9 +277,13 @@ class BondSAM_Trainer(nn.Module):
                 print("FastSAM module not found. Using placeholder.")
                 self.fastsam_processor = None
 
-        # ... existing code ...
+        # 初始化异常注意力机制（如果需要）
+        if self.use_anomaly_attention:
+            # 初始化异常注意力模块
+            self.anomaly_attention = AnomalyAttention(d_model=512)
+            self.cbam_attention = CBAM(in_planes=512)
+            self.coord_attention = CoordinateAttention(in_channels=512, out_channels=512)
 
-        ########### different model choices
         freeze_clip, _, self.preprocess = create_model_and_transforms(backbone, image_size,
                                                                       pretrained='openai')
         freeze_clip = freeze_clip.to(device)  # 确保CLIP模型在正确的设备上
@@ -263,6 +302,14 @@ class BondSAM_Trainer(nn.Module):
                                   device=device,     # 确保传递正确的设备
                                   image_size=image_size).to(device)  # 确保BondSAM模型在正确的设备上
 
+        # 如果使用增强特征提取器，添加注意力增强的特征提取器
+        if self.use_enhanced_extractor:
+            self.attention_feature_extractor = AttentionEnhancedFeatureExtractor(
+                in_channels=input_dim, 
+                out_channels=output_dim,
+                use_cbam=True,
+                use_coord=True
+            )
 
         self.transform = transforms.Compose([
             transforms.Resize((image_size, image_size)),
@@ -286,6 +333,19 @@ class BondSAM_Trainer(nn.Module):
             'dynamic_text_prompt_generator'
         ]
 
+        # 如果使用注意力机制，添加相关参数到可学习参数列表
+        if self.use_anomaly_attention:
+            self.learnable_paramter_list.extend([
+                'anomaly_attention',
+                'cbam_attention',
+                'coord_attention'
+            ])
+            
+        if self.use_enhanced_extractor:
+            self.learnable_paramter_list.extend([
+                'attention_feature_extractor'
+            ])
+
         self.params_to_update = []
         for name, param in self.clip_model.named_parameters():
             # print(name)
@@ -296,10 +356,11 @@ class BondSAM_Trainer(nn.Module):
 
         # build the optimizer
         self.optimizer = torch.optim.AdamW(self.params_to_update, lr=learning_rate, betas=(0.5, 0.999))
+        
 
     def save(self, path):
         self.save_dict = {}
-        for param, value in self.state_dict().items():
+        for param, value in self.clip_model.state_dict().items():
             for update_name in self.learnable_paramter_list:
                 if update_name in param:
                     # print(f'{param}: {update_name}')
@@ -309,8 +370,10 @@ class BondSAM_Trainer(nn.Module):
         torch.save(self.save_dict, path)
 
     def load(self, path):
-        self.load_state_dict(torch.load(path, map_location=self.device), strict=False)
+        self.clip_model.load_state_dict(torch.load(path, map_location=self.device), strict=False)
 
+    def load(self, path):
+        self.clip_model.load_state_dict(torch.load(path, map_location=self.device), strict=False)
     def train_one_batch(self, items):
         image = items['img'].to(self.device)
         cls_name = items['cls_name']
