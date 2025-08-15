@@ -10,6 +10,8 @@ import os
 import torch
 from scipy.ndimage import gaussian_filter
 import cv2
+import pandas as pd
+import os
 
 from tools import write2csv, setup_seed, Logger
 from dataset import get_data, dataset_dict
@@ -153,6 +155,10 @@ def test_bondsam(args):
             vis_map = ori_image.copy()
             vis_map = cv2.addWeighted(vis_map, 1.0, heat_map_masked, 0.7, 0)
             
+            # 在图像上添加异常分数文本
+            score_text = f"Anomaly Score: {anomaly_score:.3f}"
+            cv2.putText(vis_map, score_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2, cv2.LINE_AA)
+            
             save_path = os.path.join(args.save_path, args.save_name)
             print(f"Anomaly detected! Results saved in {save_path}, anomaly score: {anomaly_score:.3f}")
             cv2.imwrite(save_path, vis_map)
@@ -162,8 +168,37 @@ def test_bondsam(args):
         else:
             print(f"No anomaly detected. Anomaly score: {anomaly_score:.3f} (threshold: {anomaly_threshold})")
             
+            # 即使没有检测到异常，也在图像上显示分数
+            vis_map = ori_image.copy()
+            score_text = f"Anomaly Score: {anomaly_score:.3f}"
+            cv2.putText(vis_map, score_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+            
             save_path = os.path.join(args.save_path, args.save_name)
-            cv2.imwrite(save_path, ori_image)
+            cv2.imwrite(save_path, vis_map)
+
+def write2csv(results:dict,total_classes,cur_class,csv_path):
+    keys=list(results.keys())
+
+    if not os.path.exists(csv_path):
+        df_all=None
+        for class_name in total_classes:
+            r=dict()
+            for k in keys:
+                r[k]=0.00
+            df_temp=pd.DataFrame(r,index=[f'{class_name}'])
+
+            if df_all is None:
+                def_all=df_temp
+            else:
+                df_all=pd.concat([df_all,df_temp],axis=0)
+
+        df_all.to_csv(csv_path,header=True,float_format='%.2f')
+    df=pd.read_csv(csv_path,index_col=0)
+
+    for k in keys:
+        df.loc[f'{cur_class}',k]=results[k]
+
+    df.to_csv(csv_path,header=True,float_format='%.2f')
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
