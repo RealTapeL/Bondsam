@@ -161,6 +161,9 @@ def train_bondsam(args):
     # Create training progress bar
     epoch_pbar = tqdm(range(epochs), desc="Training Progress", leave=True)
     
+    logger.info("Starting training...")
+    logger.info("Epoch\tTrain Loss\tValid Loss\tImage AUROC\tPixel AUROC\tImage F1\tPixel F1")
+    
     for epoch in epoch_pbar:
         # Create a progress bar for each epoch
         batch_pbar = tqdm(train_dataloader, desc=f"Epoch {epoch+1}/{epochs}", leave=False)
@@ -169,6 +172,7 @@ def train_bondsam(args):
         
         # Update progress bar description
         epoch_pbar.set_postfix({'Loss': f'{loss:.4f}'})
+        logger.info(f'Epoch [{epoch+1}/{epochs}], Loss: {loss:.4f}')
 
         # Logs
         if (epoch + 1) % args.print_freq == 0:
@@ -191,6 +195,26 @@ def train_bondsam(args):
                 image_dir,
             )
 
+            # Log validation metrics
+            if 'Average' in metric_dict:
+                avg_metrics = metric_dict['Average']
+                logger.info('Validation Metrics:')
+                logger.info('  Image AUROC: {:.2f}'.format(avg_metrics.get('auroc_im', 0)))
+                logger.info('  Pixel AUROC: {:.2f}'.format(avg_metrics.get('auroc_px', 0)))
+                logger.info('  Image F1: {:.2f}'.format(avg_metrics.get('f1_im', 0)))
+                logger.info('  Pixel F1: {:.2f}'.format(avg_metrics.get('f1_px', 0)))
+                logger.info('  Image AP: {:.2f}'.format(avg_metrics.get('ap_im', 0)))
+                logger.info('  Pixel AP: {:.2f}'.format(avg_metrics.get('ap_px', 0)))
+                
+                # Log in tabular format for easier reading
+                logger.info('{:d}\t{:.4f}\t{:.4f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}'.format(
+                    epoch+1, loss, 0.0,  # Assuming validation loss is not calculated
+                    avg_metrics.get('auroc_im', 0),
+                    avg_metrics.get('auroc_px', 0),
+                    avg_metrics.get('f1_im', 0),
+                    avg_metrics.get('f1_px', 0)
+                ))
+
             log_metrics(
                 metric_dict,
                 logger,
@@ -198,7 +222,7 @@ def train_bondsam(args):
                 epoch
             )
 
-            f1_px = metric_dict['Average']['f1_px']
+            f1_px = metric_dict['Average']['f1_px'] if 'Average' in metric_dict and 'f1_px' in metric_dict['Average'] else 0
 
             # Save best
             if f1_px > best_f1:
@@ -208,6 +232,10 @@ def train_bondsam(args):
                 ckp_path_best = ckp_path + '_best.pth'
                 model.save(ckp_path_best)
                 best_f1 = f1_px
+                logger.info(f'New best model saved with Pixel F1: {best_f1:.2f}')
+
+    logger.info("Training completed!")
+    logger.info(f"Best Pixel F1 score: {best_f1:.2f}")
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
