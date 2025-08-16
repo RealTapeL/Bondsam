@@ -1,4 +1,3 @@
-
 python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
 
 python train_bondsam.py \
@@ -6,8 +5,8 @@ python train_bondsam.py \
   --testing_data mvtec \
   --save_fig True \
   --model ViT-B-16 \
-  --epoch 5 \
-  --learning_rate 0.001 \
+  --epoch 10 \
+  --learning_rate 0.0001 \
   --batch_size 1 \
   --image_size 224 \
   --prompting_depth 4 \

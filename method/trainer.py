@@ -354,9 +354,18 @@ class BondSAM_Trainer(nn.Module):
                     # print(f'updated parameters--{name}: {update_name}')
                     self.params_to_update.append(param)
 
-        # build the optimizer
-        self.optimizer = torch.optim.AdamW(self.params_to_update, lr=learning_rate, betas=(0.5, 0.999))
-        
+        # build the optimizer - 使用改进的AdamW优化器
+        # AdamW通常比标准Adam有更好的泛化性能，特别适合微调预训练模型
+        self.optimizer = torch.optim.AdamW(
+            self.params_to_update, 
+            lr=learning_rate, 
+            betas=(0.9, 0.999),     # 使用更标准的beta值，提供更好的动量
+            weight_decay=0.01,      # 添加权重衰减，这是AdamW相对于Adam的主要优势
+            eps=1e-8               # 数值稳定性参数
+        )
+
+        # 保存学习率以便后续可能使用
+        self.learning_rate = learning_rate
 
     def save(self, path):
         self.save_dict = {}
@@ -372,8 +381,6 @@ class BondSAM_Trainer(nn.Module):
     def load(self, path):
         self.clip_model.load_state_dict(torch.load(path, map_location=self.device), strict=False)
 
-    def load(self, path):
-        self.clip_model.load_state_dict(torch.load(path, map_location=self.device), strict=False)
     def train_one_batch(self, items):
         image = items['img'].to(self.device)
         cls_name = items['cls_name']
@@ -467,8 +474,6 @@ class BondSAM_Trainer(nn.Module):
 
         return loss
 
-    # ... existing code ...
-
     def train_epoch_with_progress(self, batch_dataloader):
         self.clip_model.train()
         loss_list = []
@@ -480,7 +485,6 @@ class BondSAM_Trainer(nn.Module):
 
         return np.mean(loss_list)
 
-
     def train_epoch(self, loader):
         self.clip_model.train()
         loss_list = []
@@ -489,9 +493,6 @@ class BondSAM_Trainer(nn.Module):
             loss_list.append(loss.item())
 
         return np.mean(loss_list)
-
-    @torch.no_grad()
-    # ... existing code ...
 
     @torch.no_grad()
     def evaluation(self, dataloader, obj_list, save_fig, save_fig_dir=None):

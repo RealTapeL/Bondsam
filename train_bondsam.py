@@ -86,6 +86,7 @@ def train_bondsam(args):
         logger.info(f'{key} = {value}')
 
     logger.info('Model name: {:}'.format(model_name))
+    logger.info(f'Using AdamW optimizer with learning rate: {learning_rate}')
 
     config_path = os.path.join('./model_configs', f'{args.model}.json')
 
@@ -128,6 +129,11 @@ def train_bondsam(args):
         use_enhanced_extractor=args.use_enhanced_extractor  # New parameter
     ).to(device)
 
+    # Check if model parameters are being updated
+    logger.info(f"Model device: {device}")
+    logger.info(f"Total parameters: {sum(p.numel() for p in model.parameters())}")
+    logger.info(f"Trainable parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}")
+
     mask_transform = transforms.Compose([
         transforms.Resize((image_size, image_size)),
         transforms.CenterCrop(image_size),
@@ -151,6 +157,7 @@ def train_bondsam(args):
     )
 
     logger.info('Data Root: training, {:}; testing, {:}'.format(train_data_root, test_data_root))
+    logger.info(f'Training samples: {len(train_data)}, Testing samples: {len(test_data)}')
 
     train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_dataloader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, shuffle=False)
@@ -161,8 +168,11 @@ def train_bondsam(args):
     # Create training progress bar
     epoch_pbar = tqdm(range(epochs), desc="Training Progress", leave=True)
     
-    logger.info("Starting training...")
+    logger.info("Starting training with AdamW optimizer...")
     logger.info("Epoch\tTrain Loss\tValid Loss\tImage AUROC\tPixel AUROC\tImage F1\tPixel F1")
+    
+    # Save initial weights for comparison
+    initial_weights = {name: param.clone() for name, param in model.named_parameters() if param.requires_grad}
     
     for epoch in epoch_pbar:
         # Create a progress bar for each epoch
@@ -173,6 +183,17 @@ def train_bondsam(args):
         # Update progress bar description
         epoch_pbar.set_postfix({'Loss': f'{loss:.4f}'})
         logger.info(f'Epoch [{epoch+1}/{epochs}], Loss: {loss:.4f}')
+
+        # Check if weights are updating
+        if epoch == 0:
+            weights_changed = False
+            for name, param in model.named_parameters():
+                if param.requires_grad:
+                    if not torch.equal(initial_weights[name], param.cpu()):
+                        weights_changed = True
+                        break
+            if not weights_changed:
+                logger.warning("Warning: Model weights are not updating. Check optimizer configuration.")
 
         # Logs
         if (epoch + 1) % args.print_freq == 0:
@@ -196,43 +217,58 @@ def train_bondsam(args):
             )
 
             # Log validation metrics
-            if 'Average' in metric_dict:
-                avg_metrics = metric_dict['Average']
-                logger.info('Validation Metrics:')
-                logger.info('  Image AUROC: {:.2f}'.format(avg_metrics.get('auroc_im', 0)))
-                logger.info('  Pixel AUROC: {:.2f}'.format(avg_metrics.get('auroc_px', 0)))
-                logger.info('  Image F1: {:.2f}'.format(avg_metrics.get('f1_im', 0)))
-                logger.info('  Pixel F1: {:.2f}'.format(avg_metrics.get('f1_px', 0)))
-                logger.info('  Image AP: {:.2f}'.format(avg_metrics.get('ap_im', 0)))
-                logger.info('  Pixel AP: {:.2f}'.format(avg_metrics.get('ap_px', 0)))
-                
-                # Log in tabular format for easier reading
-                logger.info('{:d}\t{:.4f}\t{:.4f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}'.format(
-                    epoch+1, loss, 0.0,  # Assuming validation loss is not calculated
-                    avg_metrics.get('auroc_im', 0),
-                    avg_metrics.get('auroc_px', 0),
-                    avg_metrics.get('f1_im', 0),
-                    avg_metrics.get('f1_px', 0)
-                ))
+            if metric_dict:
+                logger.info(f'Metric dict keys: {metric_dict.keys()}')
+                for key in metric_dict.keys():
+                    logger.info(f'  {key}: {metric_dict[key]}')
+                    
+                if 'Average' in metric_dict:
+                    avg_metrics = metric_dict['Average']
+                    logger.info('Validation Metrics:')
+                    logger.info('  Image AUROC: {:.2f}'.format(avg_metrics.get('auroc_im', 0)))
+                    logger.info('  Pixel AUROC: {:.2f}'.format(avg_metrics.get('auroc_px', 0)))
+                    logger.info('  Image F1: {:.2f}'.format(avg_metrics.get('f1_im', 0)))
+                    logger.info('  Pixel F1: {:.2f}'.format(avg_metrics.get('f1_px', 0)))
+                    logger.info('  Image AP: {:.2f}'.format(avg_metrics.get('ap_im', 0)))
+                    logger.info('  Pixel AP: {:.2f}'.format(avg_metrics.get('ap_px', 0)))
+                    
+                    # Log in tabular format for easier reading
+                    logger.info('{:d}\t{:.4f}\t{:.4f}\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}'.format(
+                        epoch+1, loss, 0.0,  # Assuming validation loss is not calculated
+                        avg_metrics.get('auroc_im', 0),
+                        avg_metrics.get('auroc_px', 0),
+                        avg_metrics.get('f1_im', 0),
+                        avg_metrics.get('f1_px', 0)
+                    ))
+                else:
+                    logger.info("No 'Average' key in metric_dict")
+            else:
+                logger.info("Metric dict is empty or None")
 
             log_metrics(
-                metric_dict,
+                metric_dict if metric_dict else {},
                 logger,
                 tensorboard_logger,
                 epoch
             )
 
-            f1_px = metric_dict['Average']['f1_px'] if 'Average' in metric_dict and 'f1_px' in metric_dict['Average'] else 0
+            f1_px = 0
+            if metric_dict and 'Average' in metric_dict and 'f1_px' in metric_dict['Average']:
+                f1_px = metric_dict['Average']['f1_px']
+            else:
+                logger.warning("Could not find f1_px in metric_dict")
 
             # Save best
             if f1_px > best_f1:
-                for k in metric_dict.keys():
+                for k in metric_dict.keys() if metric_dict else []:
                     write2csv(metric_dict[k], test_data_cls_names, k, csv_path)
 
                 ckp_path_best = ckp_path + '_best.pth'
                 model.save(ckp_path_best)
                 best_f1 = f1_px
                 logger.info(f'New best model saved with Pixel F1: {best_f1:.2f}')
+            elif epoch == epochs - 1:
+                logger.info(f'Final model Pixel F1: {f1_px:.2f}')
 
     logger.info("Training completed!")
     logger.info(f"Best Pixel F1 score: {best_f1:.2f}")
@@ -261,8 +297,8 @@ if __name__ == '__main__':
 
     # Hyper-parameters
     parser.add_argument("--exp_indx", type=int, default=0, help="Index of the experiment (default: 0)")
-    parser.add_argument("--epoch", type=int, default=5, help="Number of epochs (default: 5)")
-    parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate (default: 0.001)")
+    parser.add_argument("--epoch", type=int, default=10, help="Number of epochs (default: 10)")
+    parser.add_argument("--learning_rate", type=float, default=0.0001, help="Learning rate (default: 0.0001)")
     parser.add_argument("--batch_size", type=int, default=1, help="Batch size (default: 1)")
 
     parser.add_argument("--image_size", type=int, default=224, help="Size of the input images (default: 224)")
