@@ -1,0 +1,1 @@
+python Inference.py --model_path ./weights/FastSAM-x.pt --img_path /home/ps/FastSAM/igbt/image4.png

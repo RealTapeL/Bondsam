@@ -1,0 +1,1502 @@
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 50
+INFO:root:exp_indx = 0
+INFO:root:image_size = 518
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-L-14
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 50
+INFO:root:exp_indx = 0
+INFO:root:image_size = 518
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-L-14
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 50
+INFO:root:exp_indx = 0
+INFO:root:image_size = 518
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-L-14
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 50
+INFO:root:exp_indx = 0
+INFO:root:image_size = 518
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-L-14
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 50
+INFO:root:exp_indx = 0
+INFO:root:image_size = 518
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-L-14
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:epoch [1/5], loss:6.5461
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [2/5], loss:6.4498
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [3/5], loss:6.4312
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [4/5], loss:6.4274
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [5/5], loss:6.4117
+INFO:root:=============================Testing ====================================
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cpu
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = False
+INFO:root:use_enhanced_extractor = False
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:epoch [1/5], loss:6.3650
+INFO:root:=============================Testing ====================================
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:epoch [1/5], loss:6.3648
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [2/5], loss:6.3539
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [3/5], loss:6.3516
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [4/5], loss:6.3503
+INFO:root:=============================Testing ====================================
+INFO:root:epoch [5/5], loss:6.3440
+INFO:root:=============================Testing ====================================
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:Starting training...
+INFO:root:Epoch	Train Loss	Valid Loss	Image AUROC	Pixel AUROC	Image F1	Pixel F1
+INFO:root:Epoch [1/5], Loss: 6.3672
+INFO:root:epoch [1/5], loss:6.3672
+INFO:root:=============================Testing ====================================
+INFO:root:Validation Metrics:
+INFO:root:  Image AUROC: 0.00
+INFO:root:  Pixel AUROC: 0.00
+INFO:root:  Image F1: 0.00
+INFO:root:  Pixel F1: 0.00
+INFO:root:  Image AP: 0.00
+INFO:root:  Pixel AP: 0.00
+INFO:root:1	6.3672	0.0000	0.00	0.00	0.00	0.00
+INFO:root:New best model saved with Pixel F1: 0.00
+INFO:root:Epoch [2/5], Loss: 6.3538
+INFO:root:epoch [2/5], loss:6.3538
+INFO:root:=============================Testing ====================================
+INFO:root:Validation Metrics:
+INFO:root:  Image AUROC: 0.00
+INFO:root:  Pixel AUROC: 0.00
+INFO:root:  Image F1: 0.00
+INFO:root:  Pixel F1: 0.00
+INFO:root:  Image AP: 0.00
+INFO:root:  Pixel AP: 0.00
+INFO:root:2	6.3538	0.0000	0.00	0.00	0.00	0.00
+INFO:root:Epoch [3/5], Loss: 6.3518
+INFO:root:epoch [3/5], loss:6.3518
+INFO:root:=============================Testing ====================================
+INFO:root:Validation Metrics:
+INFO:root:  Image AUROC: 0.00
+INFO:root:  Pixel AUROC: 0.00
+INFO:root:  Image F1: 0.00
+INFO:root:  Pixel F1: 0.00
+INFO:root:  Image AP: 0.00
+INFO:root:  Pixel AP: 0.00
+INFO:root:3	6.3518	0.0000	0.00	0.00	0.00	0.00
+INFO:root:Epoch [4/5], Loss: 6.3502
+INFO:root:epoch [4/5], loss:6.3502
+INFO:root:=============================Testing ====================================
+INFO:root:Validation Metrics:
+INFO:root:  Image AUROC: 0.00
+INFO:root:  Pixel AUROC: 0.00
+INFO:root:  Image F1: 0.00
+INFO:root:  Pixel F1: 0.00
+INFO:root:  Image AP: 0.00
+INFO:root:  Pixel AP: 0.00
+INFO:root:4	6.3502	0.0000	0.00	0.00	0.00	0.00
+INFO:root:Epoch [5/5], Loss: 6.3434
+INFO:root:epoch [5/5], loss:6.3434
+INFO:root:=============================Testing ====================================
+INFO:root:Validation Metrics:
+INFO:root:  Image AUROC: 0.00
+INFO:root:  Pixel AUROC: 0.00
+INFO:root:  Image F1: 0.00
+INFO:root:  Pixel F1: 0.00
+INFO:root:  Image AP: 0.00
+INFO:root:  Pixel AP: 0.00
+INFO:root:5	6.3434	0.0000	0.00	0.00	0.00	0.00
+INFO:root:Training completed!
+INFO:root:Best Pixel F1 score: 0.00
+INFO:root:batch_size = 1
+INFO:root:ckt_path = 
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:exp_indx = 0
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:learning_rate = 0.001
+INFO:root:model = ViT-B-16
+INFO:root:print_freq = 1
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 4
+INFO:root:prompting_length = 5
+INFO:root:prompting_type = SD
+INFO:root:save_fig = True
+INFO:root:save_path = ./workspaces/bondsam_exp1
+INFO:root:testing_data = mvtec
+INFO:root:training_data = ['mvtec']
+INFO:root:use_anomaly_attention = True
+INFO:root:use_enhanced_extractor = True
+INFO:root:use_hsf = True
+INFO:root:valid_freq = 1
+INFO:root:Model name: model
+INFO:root:Model device: cuda
+INFO:root:Total parameters: 5659392
+INFO:root:Trainable parameters: 5659392
+INFO:root:Data Root: training, /home/ps/few-shot-research/MVTec; testing, /home/ps/few-shot-research/MVTec
+INFO:root:Training samples: 1725, Testing samples: 1725
+INFO:root:Starting training...
+INFO:root:Epoch	Train Loss	Valid Loss	Image AUROC	Pixel AUROC	Image F1	Pixel F1
+INFO:root:Epoch [1/5], Loss: 6.3642

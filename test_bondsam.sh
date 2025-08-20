@@ -1,0 +1,21 @@
+
+python test_bondsam.py \
+  --testing_model image \
+  --ckt_path /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250820-134530/checkpoint_best.pth \
+  --save_fig \
+  --image_path /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg \
+  --class_name leather \
+  --save_name /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250820-134530/bondsam_result_leather.jpg \
+  --model ViT-B-16 \
+  --image_size 224 \
+  --prompting_depth 0 \
+  --prompting_length 0 \
+  --prompting_type '' \
+  --prompting_branch '' \
+  --use_hsf \
+  --k_clusters 20 \
+  --device cuda \
+  --use_memory_bank \
+  --mode few_shot \
+  --k_shot 10 \
+  --testing_data mvtec
