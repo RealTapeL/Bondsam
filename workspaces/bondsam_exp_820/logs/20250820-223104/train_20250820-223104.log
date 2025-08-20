@@ -1,0 +1,54 @@
+INFO:root:batch_size = 8
+INFO:root:device = cuda
+INFO:root:epoch = 5
+INFO:root:eval_interval = 5
+INFO:root:image_size = 224
+INFO:root:k_clusters = 20
+INFO:root:k_shot = 1
+INFO:root:learning_rate = 0.001
+INFO:root:mode = few_shot
+INFO:root:model = ViT-B-16
+INFO:root:prompting_branch = VL
+INFO:root:prompting_depth = 3
+INFO:root:prompting_length = 2
+INFO:root:prompting_type = SD
+INFO:root:save_fig = False
+INFO:root:save_interval = 20
+INFO:root:save_path = ./workspaces/bondsam_exp_820
+INFO:root:training_data = mvtec
+INFO:root:use_fastsam = True
+INFO:root:use_hsf = True
+INFO:root:use_memory_bank = True
+INFO:root:Loading training data...
+INFO:root:Training data loaded. Classes: ['bottle', 'cable', 'capsule', 'carpet', 'grid', 'hazelnut', 'leather', 'metal_nut', 'pill', 'screw', 'tile', 'toothbrush', 'transistor', 'wood', 'zipper'], Total samples: 1725
+INFO:root:Starting to build Memory Bank for few-shot anomaly detection...
+INFO:root:Building Memory Bank with k_shot=1
+INFO:root:Memory Bank built with 15 classes
+INFO:root:Loading test data...
+INFO:root:Test data loaded. Classes: ['bottle', 'cable', 'capsule', 'carpet', 'grid', 'hazelnut', 'leather', 'metal_nut', 'pill', 'screw', 'tile', 'toothbrush', 'transistor', 'wood', 'zipper'], Total samples: 1725
+INFO:root:Starting training loop...
+INFO:root:Starting epoch 1/5
+INFO:root:Evaluating at epoch 0
+INFO:root:Epoch [0/5], Train Loss: 6.3199
+INFO:root:         bottle 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:          cable 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:        capsule 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:         carpet 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:           grid 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:       hazelnut 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:        leather 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:      metal_nut 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:           pill 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:          screw 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:           tile 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:     toothbrush 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:     transistor 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:           wood 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:         zipper 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:        Average 		I-Auroc:0.00 	I-F1:0.00 	I-AP:0.00 	P-Auroc:0.00 	P-F1:0.00 	P-AP:0.00
+INFO:root:Best model saved at epoch 0 with loss 6.3199
+INFO:root:Starting epoch 2/5
+INFO:root:Starting epoch 3/5
+INFO:root:Starting epoch 4/5
+INFO:root:Starting epoch 5/5
+INFO:root:Training completed.
