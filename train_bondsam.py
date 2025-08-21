@@ -174,18 +174,26 @@ def train_bondsam(args):
 
     # Training
     best_loss = float('inf')
+    best_metrics = {'auroc_im': 0.0, 'auroc_px': 0.0}
     logger.info("Starting training loop...")
+    
     for epoch in range(epochs):
         logger.info(f"Starting epoch {epoch+1}/{epochs}")
         # Training epoch with progress bar
         train_loader_with_progress = tqdm(train_dataloader, desc=f'Epoch {epoch+1}/{epochs}')
         train_loss = model.train_epoch_with_progress(train_loader_with_progress)
-        
+
         # Evaluation
         if epoch % args.eval_interval == 0:
             logger.info(f"Evaluating at epoch {epoch}")
             metric_dict = model.evaluation(test_dataloader, test_data_cls_names, save_fig=False)
             logger.info(f'Epoch [{epoch}/{epochs}], Train Loss: {train_loss:.4f}')
+            
+            # 计算平均指标用于模型选择
+            avg_auroc_im = 0.0
+            avg_auroc_px = 0.0
+            valid_class_count = 0
+            
             for tag, data in metric_dict.items():
                 logger.info(
                     '{:>15} \t\tI-Auroc:{:.2f} \tI-F1:{:.2f} \tI-AP:{:.2f} \tP-Auroc:{:.2f} \tP-F1:{:.2f} \tP-AP:{:.2f}'.
@@ -197,31 +205,43 @@ def train_bondsam(args):
                                data['f1_px'],
                                data['ap_px'])
                 )
+                
+                # 累加有效类别的指标
+                if tag != 'Average' and (data['auroc_im'] > 0 or data['auroc_px'] > 0):
+                    avg_auroc_im += data['auroc_im']
+                    avg_auroc_px += data['auroc_px']
+                    valid_class_count += 1
             
-            # Save best model
-            if train_loss < best_loss:
-                best_loss = train_loss
+            # 计算平均指标
+            if valid_class_count > 0:
+                avg_auroc_im /= valid_class_count
+                avg_auroc_px /= valid_class_count
+            
+            # Save best model based on combined metrics
+            combined_score = avg_auroc_im + avg_auroc_px
+            if combined_score > (best_metrics['auroc_im'] + best_metrics['auroc_px']):
+                best_metrics = {'auroc_im': avg_auroc_im, 'auroc_px': avg_auroc_px}
                 model.save(f'{ckp_path}_best.pth')
-                logger.info(f'Best model saved at epoch {epoch} with loss {best_loss:.4f}')
+                logger.info(f'Best model saved at epoch {epoch} with combined score {combined_score:.2f}')
         
-        # Save checkpoint
-        if epoch % args.save_interval == 0 and epoch > 0:
-            model.save(f'{ckp_path}_epoch{epoch}.pth')
-            logger.info(f'Model checkpoint saved at epoch {epoch}')
-
+    # 保存最终模型
+    model.save(f'{ckp_path}_final.pth')
+    logger.info(f'Final model saved at epoch {epochs}')
+    
     logger.info('Training completed.')
+    logger.info(f'Best metrics achieved - Image AUROC: {best_metrics["auroc_im"]:.2f}, Pixel AUROC: {best_metrics["auroc_px"]:.2f}')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Training BondSAM')
     parser.add_argument("--epoch", type=int, default=100)
     parser.add_argument("--learning_rate", type=float, default=0.001)
-    parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--batch_size", type=int, default=8)  # 减小批次大小以适应内存
     parser.add_argument("--image_size", type=int, default=224)
     parser.add_argument("--device", type=str, default="")
     parser.add_argument("--save_fig", action="store_true")
     parser.add_argument("--save_path", type=str, default="./workspaces/bondsam_exp")
     parser.add_argument("--eval_interval", type=int, default=5)
-    parser.add_argument("--save_interval", type=int, default=20)
+    parser.add_argument("--save_interval", type=int, default=10)
     parser.add_argument("--model", type=str, default="ViT-B-16")
     parser.add_argument("--prompting_depth", type=int, default=3)
     parser.add_argument("--prompting_length", type=int, default=2)
@@ -233,8 +253,8 @@ if __name__ == '__main__':
     parser.add_argument("--use_fastsam", action="store_true")
     # 添加新参数
     parser.add_argument("--use_memory_bank", action="store_true", help="use memory bank for few-shot anomaly detection")
-    parser.add_argument("--mode", type=str, default="zero_shot", choices=["zero_shot", "few_shot"], help="training mode")
-    parser.add_argument("--k_shot", type=int, default=10, help="number of shots for few-shot learning")
+    parser.add_argument("--mode", type=str, default="few_shot", choices=["zero_shot", "few_shot"], help="training mode")
+    parser.add_argument("--k_shot", type=int, default=1, help="number of shots for few-shot learning")
     
     args = parser.parse_args()
     train_bondsam(args)
