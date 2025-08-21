@@ -3,8 +3,8 @@ python -c "import torch; print('CUDA available:', torch.cuda.is_available())"
 
 
 python train_bondsam.py \
-  --epoch 5 \
-  --learning_rate 0.001 \
+  --epoch 1 \
+  --learning_rate 0.0001 \
   --batch_size 8 \
   --image_size 224 \
   --model ViT-B-16 \
@@ -18,6 +18,6 @@ python train_bondsam.py \
   --use_fastsam \
   --use_memory_bank \
   --mode few_shot \
-  --k_shot 1 \
+  --k_shot 10 \
   --device cuda \
   --save_path ./workspaces/bondsam_exp_820

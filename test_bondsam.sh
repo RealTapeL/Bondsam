@@ -1,11 +1,11 @@
 
 python test_bondsam.py \
   --testing_model image \
-  --ckt_path /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250820-223104/checkpoint_best.pth \
+  --ckt_path /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-132510/checkpoint_best.pth \
   --save_fig \
   --image_path /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg \
   --class_name leather \
-  --save_name /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250820-223104/bondsam_result_leather.jpg \
+  --save_name /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-132510/bondsam_result_leather.jpg \
   --model ViT-B-16 \
   --image_size 224 \
   --prompting_depth 0 \
