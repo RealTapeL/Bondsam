@@ -129,7 +129,9 @@ def train_bondsam(args):
         k_clusters=args.k_clusters,
         use_fastsam=args.use_fastsam,
         use_memory_bank=args.use_memory_bank,  # 添加Memory Bank选项
-        k_shot=args.k_shot  # 添加少样本数量参数
+        k_shot=args.k_shot,  # 添加少样本数量参数
+        memory_cluster_method=args.memory_cluster_method,
+        memory_cluster_size=args.memory_cluster_size
     ).to(device)
 
     # 获取训练数据
@@ -225,7 +227,7 @@ def train_bondsam(args):
                 logger.info(f'Best model saved at epoch {epoch} with combined score {combined_score:.2f}')
         
     # 保存最终模型
-    model.save(f'{ckp_path}_final.pth')
+    model.save(f'{ckp_path}_best.pth')
     logger.info(f'Final model saved at epoch {epochs}')
     
     logger.info('Training completed.')
@@ -255,6 +257,9 @@ if __name__ == '__main__':
     parser.add_argument("--use_memory_bank", action="store_true", help="use memory bank for few-shot anomaly detection")
     parser.add_argument("--mode", type=str, default="few_shot", choices=["zero_shot", "few_shot"], help="training mode")
     parser.add_argument("--k_shot", type=int, default=1, help="number of shots for few-shot learning")
+    # Memory Bank聚类相关参数
+    parser.add_argument("--memory_cluster_method", type=str, default="kmeans", choices=["kmeans", "adaptive_pooling", "random_sampling"], help="clustering method for memory bank")
+    parser.add_argument("--memory_cluster_size", type=int, default=32, help="number of clusters for memory bank")
     
     args = parser.parse_args()
     train_bondsam(args)

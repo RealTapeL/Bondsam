@@ -1,11 +1,11 @@
 
 python test_bondsam.py \
   --testing_model image \
-  --ckt_path /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-142510/checkpoint_best.pth \
+  --ckt_path /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth \
   --save_fig \
   --image_path /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg \
   --class_name leather \
-  --save_name /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-142510/bondsam_result_leather.jpg \
+  --save_name /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather.jpg \
   --model ViT-B-16 \
   --image_size 224 \
   --prompting_depth 0 \
@@ -18,4 +18,5 @@ python test_bondsam.py \
   --use_memory_bank \
   --mode few_shot \
   --k_shot 10 \
-  --testing_data mvtec
+  --testing_data mvtec \
+  --anomaly_threshold 0.8

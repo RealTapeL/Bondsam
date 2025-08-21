@@ -230,7 +230,9 @@ class BondSAM_Trainer(nn.Module):
             use_anomaly_attention=False,
             use_enhanced_extractor=False,
             use_memory_bank=False,
-            k_shot=10
+            k_shot=10,
+            memory_cluster_method='kmeans',
+            memory_cluster_size=32
     ):
 
         super(BondSAM_Trainer, self).__init__()
@@ -245,6 +247,8 @@ class BondSAM_Trainer(nn.Module):
         self.use_enhanced_extractor = use_enhanced_extractor
         self.use_memory_bank = use_memory_bank
         self.k_shot = k_shot
+        self.memory_cluster_method = memory_cluster_method
+        self.memory_cluster_size = memory_cluster_size
 
         self.loss_focal = FocalLoss()
         self.loss_dice = BinaryDiceLoss()
@@ -483,6 +487,14 @@ class BondSAM_Trainer(nn.Module):
         results['imgs'] = []
         results['names'] = []
 
+        # 如果使用Memory Bank，则进行聚类
+        if self.use_memory_bank and self.memory_bank and hasattr(self.memory_bank, 'memory_features'):
+            # 对Memory Bank中的特征进行聚类
+            self.memory_bank.cluster_memory_features(
+                n_clusters=self.memory_cluster_size, 
+                method=self.memory_cluster_method
+            )
+
         with torch.no_grad():
             image_indx = 0
             for indx, items in enumerate(dataloader):
@@ -525,7 +537,7 @@ class BondSAM_Trainer(nn.Module):
                     
                     if self.anomaly_combiner:
                         anomaly_maps, anomaly_score = self.anomaly_combiner.combine_classification_and_segmentation(
-                            image_features, patch_tokens, text_features, self.memory_bank, cls_name[0]
+                            image_features, patch_tokens, text_features, self.memory_bank, cls_name[0], use_clustered=True
                         )
                         
                         if isinstance(anomaly_maps, list):

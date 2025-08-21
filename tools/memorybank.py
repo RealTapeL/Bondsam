@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import numpy as np
 from tqdm import tqdm
+from sklearn.cluster import KMeans
 
 
 class MemoryBank:
@@ -12,6 +13,7 @@ class MemoryBank:
     def __init__(self, device='cuda'):
         self.device = device
         self.memory_features = {}
+        self.clustered_memory_features = {}
         
     def build_memory_bank(self, model, dataloader, obj_list, k_shot=10):
         """
@@ -91,15 +93,94 @@ class MemoryBank:
         self.memory_features = mem_features
         return mem_features
 
-    def calculate_anomaly_score_with_memory(self, patch_tokens, obj_name):
+    def cluster_memory_features(self, n_clusters=32, method='kmeans'):
+        """
+        Apply clustering to memory features to reduce redundancy and improve efficiency
+        """
+        clustered_features = {}
+        
+        for obj_name, features in self.memory_features.items():
+            if isinstance(features, list):
+                # 多层特征聚类
+                clustered_layers = []
+                for layer_features in features:
+                    if layer_features.shape[0] > n_clusters:
+                        if method == 'kmeans':
+                            # 使用K-means聚类
+                            features_cpu = layer_features.cpu().numpy()
+                            kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init=10).fit(features_cpu)
+                            clustered_layer = torch.from_numpy(kmeans.cluster_centers_).float().to(self.device)
+                        elif method == 'adaptive_pooling':
+                            # 使用自适应池化
+                            # 将特征重塑为可以池化的形式
+                            n_features = layer_features.shape[0]
+                            if n_features > n_clusters:
+                                # 计算池化窗口大小
+                                pool_size = n_features // n_clusters
+                                # 使用自适应平均池化
+                                pooled = F.adaptive_avg_pool1d(
+                                    layer_features.permute(1, 0).unsqueeze(0), 
+                                    n_clusters
+                                ).squeeze(0).permute(1, 0)
+                                clustered_layer = pooled
+                            else:
+                                clustered_layer = layer_features
+                        else:
+                            # 默认使用简单的随机采样
+                            indices = torch.randperm(layer_features.shape[0])[:n_clusters]
+                            clustered_layer = layer_features[indices]
+                    else:
+                        clustered_layer = features
+                    
+                    clustered_layers.append(clustered_layer)
+                clustered_features[obj_name] = clustered_layers
+            else:
+                # 单层特征聚类
+                if features.shape[0] > n_clusters:
+                    if method == 'kmeans':
+                        features_cpu = features.cpu().numpy()
+                        kmeans = KMeans(n_clusters=n_clusters, random_state=0, n_init=10).fit(features_cpu)
+                        clustered_features[obj_name] = torch.from_numpy(kmeans.cluster_centers_).float().to(self.device)
+                    elif method == 'adaptive_pooling':
+                        n_features = features.shape[0]
+                        if n_features > n_clusters:
+                            pooled = F.adaptive_avg_pool1d(
+                                features.permute(1, 0).unsqueeze(0), 
+                                n_clusters
+                            ).squeeze(0).permute(1, 0)
+                            clustered_features[obj_name] = pooled
+                        else:
+                            clustered_features[obj_name] = features
+                    else:
+                        # 默认使用简单的随机采样
+                        indices = torch.randperm(features.shape[0])[:n_clusters]
+                        clustered_features[obj_name] = features[indices]
+                else:
+                    clustered_features[obj_name] = features
+                    
+        self.clustered_memory_features = clustered_features
+        return clustered_features
+
+    def get_memory_features(self, obj_name, use_clustered=False):
+        """
+        Retrieve memory features, optionally using clustered versions
+        """
+        if use_clustered and obj_name in self.clustered_memory_features:
+            return self.clustered_memory_features[obj_name]
+        elif obj_name in self.memory_features:
+            return self.memory_features[obj_name]
+        else:
+            return None
+
+    def calculate_anomaly_score_with_memory(self, patch_tokens, obj_name, use_clustered=False):
         """
         Calculate anomaly score using Memory Bank (GPU optimized version)
         """
-        if obj_name not in self.memory_features:
+        memory_features = self.get_memory_features(obj_name, use_clustered)
+        
+        if memory_features is None:
             return None
             
-        memory_features = self.memory_features[obj_name]
-        
         # Process patch tokens, ensuring they are on the correct device
         if isinstance(patch_tokens, list):
             # Multi-layer feature case
@@ -107,7 +188,10 @@ class MemoryBank:
             for idx, p in enumerate(patch_tokens):
                 # Ensure on the correct device
                 p = p.to(self.device)
-                mem_feat = memory_features[idx].to(self.device)
+                if isinstance(memory_features, list):
+                    mem_feat = memory_features[idx].to(self.device)
+                else:
+                    mem_feat = memory_features.to(self.device)
                 
                 if p.dim() == 3:
                     p = p[0, 1:, :]
@@ -203,7 +287,7 @@ class AnomalyClassificationAndSegmentation:
         self.alpha = alpha  # Weight for combining classification and segmentation results
         self.device = device
         
-    def combine_classification_and_segmentation(self, image_features, patch_tokens, text_features, memory_bank=None, obj_name=None):
+    def combine_classification_and_segmentation(self, image_features, patch_tokens, text_features, memory_bank=None, obj_name=None, use_clustered=False):
         """
         Combine image-level classification and pixel-level segmentation results
         """
@@ -240,7 +324,7 @@ class AnomalyClassificationAndSegmentation:
         
         # Combine with memory bank features if available
         if memory_bank and obj_name:
-            memory_score = memory_bank.calculate_anomaly_score_with_memory(patch_tokens, obj_name)
+            memory_score = memory_bank.calculate_anomaly_score_with_memory(patch_tokens, obj_name, use_clustered=use_clustered)
             if memory_score is not None:
                 # Combine memory bank score with existing score
                 memory_score_normalized = (memory_score - memory_score.min()) / (memory_score.max() - memory_score.min() + 1e-8)

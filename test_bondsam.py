@@ -134,7 +134,9 @@ def test_bondsam(args):
         k_clusters=args.k_clusters,
         use_fastsam=True,
         use_memory_bank=args.use_memory_bank,
-        k_shot=args.k_shot
+        k_shot=args.k_shot,
+        memory_cluster_method=args.memory_cluster_method,
+        memory_cluster_size=args.memory_cluster_size
     ).to(device)
 
     # 加载模型权重
@@ -255,21 +257,19 @@ def test_bondsam(args):
         anomaly_map = anomaly_map.cpu().numpy()
         anomaly_score = anomaly_score.cpu().numpy()
 
-        anomaly_threshold = 0.5
-
         # Apply Gaussian filter to smooth the anomaly map
         anomaly_map_smoothed = gaussian_filter(anomaly_map, sigma=4)
         
         # Normalize the anomaly map
         anomaly_map_normalized = normalize(anomaly_map_smoothed)
         
-        # Create binary mask for highlighting anomalies
-        binary_mask = create_binary_mask(anomaly_map_normalized, threshold=0.5)
+        # Create binary mask for highlighting anomalies using configurable threshold
+        binary_mask = create_binary_mask(anomaly_map_normalized, threshold=args.anomaly_threshold)
         
         # Overlay deep blue mask on the original image
         masked_image = overlay_mask_on_image(ori_image, binary_mask, alpha=0.6)
         
-        # Add anomaly score to the image
+        # Add only anomaly score to the image (without threshold)
         final_image = add_anomaly_info(masked_image, anomaly_score)
         
         # Draw contours around anomaly regions
@@ -297,6 +297,7 @@ def test_bondsam(args):
         cv2.imwrite(heatmap_save_path, heatmap)
         
         print(f"Anomaly score: {anomaly_score:.3f}")
+        print(f"Anomaly threshold: {args.anomaly_threshold:.3f}")
         print(f"Visualization saved to: {save_path}")
 
 def write2csv(results:dict,total_classes,cur_class,csv_path):
@@ -347,6 +348,11 @@ if __name__ == '__main__':
     parser.add_argument("--use_memory_bank", action="store_true", help="use memory bank for few-shot anomaly detection")
     parser.add_argument("--mode", type=str, default="zero_shot", choices=["zero_shot", "few_shot"], help="inference mode")
     parser.add_argument("--k_shot", type=int, default=10, help="number of shots for few-shot learning")
+    # 添加异常阈值参数
+    parser.add_argument("--anomaly_threshold", type=float, default=0.5, help="threshold for anomaly detection")
+    # 添加Memory Bank聚类相关参数
+    parser.add_argument("--memory_cluster_method", type=str, default="kmeans", choices=["kmeans", "adaptive_pooling", "random_sampling"], help="clustering method for memory bank")
+    parser.add_argument("--memory_cluster_size", type=int, default=32, help="number of clusters for memory bank")
     
     args = parser.parse_args()
     test_bondsam(args)

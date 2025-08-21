@@ -55,7 +55,11 @@ def calculate_metric(results, obj):
     else:
         # 当只有一个类别时，使用简单的准确率作为替代
         if len(obj_gt_list) > 0:
-            accuracy = np.mean((obj_pr_list > 0.5) == obj_gt_list)
+            # 检查预测值是否全部相同
+            if np.all(obj_pr_list == obj_pr_list[0]):
+                accuracy = 1.0 if obj_gt_list[0] == (obj_pr_list[0] > 0.5) else 0.0
+            else:
+                accuracy = np.mean((obj_pr_list > 0.5) == obj_gt_list)
             auroc_img = accuracy
             ap_img = accuracy
             f1_img = accuracy
@@ -88,10 +92,19 @@ def calculate_metric(results, obj):
                 f1_pixel = 0.0
         else:
             # 当只有一个类别时，使用简单的准确率作为替代
-            accuracy = np.mean((obj_pr_mask_list > 0.5) == obj_gt_mask_list)
-            auroc_pixel = accuracy
-            ap_pixel = accuracy
-            f1_pixel = accuracy
+            if len(obj_gt_mask_list) > 0:
+                # 检查预测值是否全部相同
+                if np.all(obj_pr_mask_list == obj_pr_mask_list[0]):
+                    accuracy = 1.0 if obj_gt_mask_list[0] == (obj_pr_mask_list[0] > 0.5) else 0.0
+                else:
+                    accuracy = np.mean((obj_pr_mask_list > 0.5) == obj_gt_mask_list)
+                auroc_pixel = accuracy
+                ap_pixel = accuracy
+                f1_pixel = accuracy
+            else:
+                auroc_pixel = 0.0
+                ap_pixel = 0.0
+                f1_pixel = 0.0
     else:
         auroc_pixel = 0.0
         ap_pixel = 0.0
