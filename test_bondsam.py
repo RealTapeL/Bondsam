@@ -242,15 +242,21 @@ def test_bondsam(args):
         img_input = img_input.unsqueeze(0)
         img_input = img_input.to(model.device)
 
+        # 处理FastSAM掩码
         if hasattr(model, 'fastsam_processor') and model.fastsam_processor is not None:
             fastsam_mask = model.fastsam_processor.process_image(args.image_path)
             fastsam_mask = torch.from_numpy(fastsam_mask).float().unsqueeze(0)
             fastsam_mask = fastsam_mask.to(model.device)
+            logger.info(f"FastSAM mask stats - Min: {fastsam_mask.min()}, Max: {fastsam_mask.max()}, Mean: {fastsam_mask.mean()}")
         else:
             fastsam_mask = torch.ones((1, args.image_size, args.image_size), dtype=torch.float32).to(model.device) * 0.5
+            logger.info("Using default FastSAM mask (all 0.5)")
 
         with torch.no_grad():
             anomaly_map, anomaly_score = model.clip_model(img_input, [args.class_name], aggregation=True, fastsam_mask=fastsam_mask)
+            
+            # 记录异常图的一些统计信息
+            logger.info(f"Anomaly map stats - Min: {anomaly_map.min()}, Max: {anomaly_map.max()}, Mean: {anomaly_map.mean()}")
 
         anomaly_map = anomaly_map[0, :, :]
         anomaly_score = anomaly_score[0]
@@ -263,8 +269,14 @@ def test_bondsam(args):
         # Normalize the anomaly map
         anomaly_map_normalized = normalize(anomaly_map_smoothed)
         
+        # 记录归一化后的异常图统计信息
+        logger.info(f"Normalized anomaly map stats - Min: {anomaly_map_normalized.min()}, Max: {anomaly_map_normalized.max()}, Mean: {anomaly_map_normalized.mean()}")
+        
         # Create binary mask for highlighting anomalies using configurable threshold
         binary_mask = create_binary_mask(anomaly_map_normalized, threshold=args.anomaly_threshold)
+        
+        # 记录二值化掩码的统计信息
+        logger.info(f"Binary mask stats - Unique values: {np.unique(binary_mask)}, Non-zero ratio: {np.count_nonzero(binary_mask) / binary_mask.size}")
         
         # Overlay deep blue mask on the original image
         masked_image = overlay_mask_on_image(ori_image, binary_mask, alpha=0.6)

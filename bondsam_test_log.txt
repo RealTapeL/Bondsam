@@ -1197,3 +1197,477 @@ INFO:root:use_hsf = True
 25-08-21 17:20:10.709 - INFO: use_memory_bank = True
 25-08-21 17:21:08.093 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
 25-08-21 17:21:08.854 - INFO: Memory Bank built with 1 classes
+25-08-21 17:36:51.326 - INFO: anomaly_threshold = 0.8
+25-08-21 17:36:51.326 - INFO: batch_size = 1
+25-08-21 17:36:51.326 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:36:51.326 - INFO: class_name = leather
+25-08-21 17:36:51.326 - INFO: device = cuda
+25-08-21 17:36:51.326 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 17:36:51.326 - INFO: image_size = 224
+25-08-21 17:36:51.326 - INFO: k_clusters = 20
+25-08-21 17:36:51.326 - INFO: k_shot = 10
+25-08-21 17:36:51.326 - INFO: memory_cluster_method = kmeans
+25-08-21 17:36:51.326 - INFO: memory_cluster_size = 32
+25-08-21 17:36:51.326 - INFO: mode = few_shot
+25-08-21 17:36:51.326 - INFO: model = ViT-B-16
+25-08-21 17:36:51.326 - INFO: prompting_branch = 
+25-08-21 17:36:51.327 - INFO: prompting_depth = 0
+25-08-21 17:36:51.327 - INFO: prompting_length = 0
+25-08-21 17:36:51.327 - INFO: prompting_type = 
+25-08-21 17:36:51.327 - INFO: save_fig = True
+25-08-21 17:36:51.327 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 17:36:51.327 - INFO: save_path = ./results
+25-08-21 17:36:51.327 - INFO: testing_data = mvtec
+25-08-21 17:36:51.327 - INFO: testing_model = image
+25-08-21 17:36:51.327 - INFO: use_hsf = True
+25-08-21 17:36:51.327 - INFO: use_memory_bank = True
+25-08-21 17:37:48.512 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:37:49.300 - INFO: Memory Bank built with 1 classes
+25-08-21 17:38:05.477 - INFO: anomaly_threshold = 0.5
+25-08-21 17:38:05.477 - INFO: batch_size = 1
+25-08-21 17:38:05.477 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:38:05.477 - INFO: class_name = leather
+25-08-21 17:38:05.477 - INFO: device = cuda
+25-08-21 17:38:05.477 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 17:38:05.477 - INFO: image_size = 224
+25-08-21 17:38:05.477 - INFO: k_clusters = 20
+25-08-21 17:38:05.477 - INFO: k_shot = 10
+25-08-21 17:38:05.477 - INFO: memory_cluster_method = kmeans
+25-08-21 17:38:05.477 - INFO: memory_cluster_size = 32
+25-08-21 17:38:05.477 - INFO: mode = few_shot
+25-08-21 17:38:05.477 - INFO: model = ViT-B-16
+25-08-21 17:38:05.477 - INFO: prompting_branch = 
+25-08-21 17:38:05.477 - INFO: prompting_depth = 0
+25-08-21 17:38:05.477 - INFO: prompting_length = 0
+25-08-21 17:38:05.477 - INFO: prompting_type = 
+25-08-21 17:38:05.477 - INFO: save_fig = True
+25-08-21 17:38:05.477 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 17:38:05.477 - INFO: save_path = ./results
+25-08-21 17:38:05.478 - INFO: testing_data = mvtec
+25-08-21 17:38:05.478 - INFO: testing_model = image
+25-08-21 17:38:05.478 - INFO: use_hsf = True
+25-08-21 17:38:05.478 - INFO: use_memory_bank = True
+25-08-21 17:39:02.658 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:39:03.408 - INFO: Memory Bank built with 1 classes
+25-08-21 17:39:29.098 - INFO: anomaly_threshold = 0.55
+25-08-21 17:39:29.098 - INFO: batch_size = 1
+25-08-21 17:39:29.098 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:39:29.098 - INFO: class_name = leather
+25-08-21 17:39:29.098 - INFO: device = cuda
+25-08-21 17:39:29.098 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 17:39:29.098 - INFO: image_size = 224
+25-08-21 17:39:29.098 - INFO: k_clusters = 20
+25-08-21 17:39:29.098 - INFO: k_shot = 10
+25-08-21 17:39:29.098 - INFO: memory_cluster_method = kmeans
+25-08-21 17:39:29.098 - INFO: memory_cluster_size = 32
+25-08-21 17:39:29.098 - INFO: mode = few_shot
+25-08-21 17:39:29.098 - INFO: model = ViT-B-16
+25-08-21 17:39:29.098 - INFO: prompting_branch = 
+25-08-21 17:39:29.098 - INFO: prompting_depth = 0
+25-08-21 17:39:29.098 - INFO: prompting_length = 0
+25-08-21 17:39:29.098 - INFO: prompting_type = 
+25-08-21 17:39:29.098 - INFO: save_fig = True
+25-08-21 17:39:29.098 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 17:39:29.098 - INFO: save_path = ./results
+25-08-21 17:39:29.098 - INFO: testing_data = mvtec
+25-08-21 17:39:29.098 - INFO: testing_model = image
+25-08-21 17:39:29.098 - INFO: use_hsf = True
+25-08-21 17:39:29.098 - INFO: use_memory_bank = True
+25-08-21 17:40:25.996 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:40:26.762 - INFO: Memory Bank built with 1 classes
+25-08-21 17:40:45.484 - INFO: anomaly_threshold = 0.6
+25-08-21 17:40:45.484 - INFO: batch_size = 1
+25-08-21 17:40:45.484 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:40:45.484 - INFO: class_name = leather
+25-08-21 17:40:45.484 - INFO: device = cuda
+25-08-21 17:40:45.484 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 17:40:45.484 - INFO: image_size = 224
+25-08-21 17:40:45.484 - INFO: k_clusters = 20
+25-08-21 17:40:45.484 - INFO: k_shot = 10
+25-08-21 17:40:45.484 - INFO: memory_cluster_method = kmeans
+25-08-21 17:40:45.484 - INFO: memory_cluster_size = 32
+25-08-21 17:40:45.484 - INFO: mode = few_shot
+25-08-21 17:40:45.484 - INFO: model = ViT-B-16
+25-08-21 17:40:45.485 - INFO: prompting_branch = 
+25-08-21 17:40:45.485 - INFO: prompting_depth = 0
+25-08-21 17:40:45.485 - INFO: prompting_length = 0
+25-08-21 17:40:45.485 - INFO: prompting_type = 
+25-08-21 17:40:45.485 - INFO: save_fig = True
+25-08-21 17:40:45.485 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 17:40:45.485 - INFO: save_path = ./results
+25-08-21 17:40:45.485 - INFO: testing_data = mvtec
+25-08-21 17:40:45.485 - INFO: testing_model = image
+25-08-21 17:40:45.485 - INFO: use_hsf = True
+25-08-21 17:40:45.485 - INFO: use_memory_bank = True
+25-08-21 17:41:42.595 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:41:43.342 - INFO: Memory Bank built with 1 classes
+25-08-21 17:46:07.365 - INFO: anomaly_threshold = 0.6
+25-08-21 17:46:07.365 - INFO: batch_size = 1
+25-08-21 17:46:07.365 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:46:07.365 - INFO: class_name = leather
+25-08-21 17:46:07.365 - INFO: device = cuda
+25-08-21 17:46:07.365 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/004.jpg
+25-08-21 17:46:07.365 - INFO: image_size = 224
+25-08-21 17:46:07.365 - INFO: k_clusters = 20
+25-08-21 17:46:07.365 - INFO: k_shot = 10
+25-08-21 17:46:07.365 - INFO: memory_cluster_method = kmeans
+25-08-21 17:46:07.365 - INFO: memory_cluster_size = 32
+25-08-21 17:46:07.365 - INFO: mode = few_shot
+25-08-21 17:46:07.365 - INFO: model = ViT-B-16
+25-08-21 17:46:07.365 - INFO: prompting_branch = 
+25-08-21 17:46:07.365 - INFO: prompting_depth = 0
+25-08-21 17:46:07.365 - INFO: prompting_length = 0
+25-08-21 17:46:07.365 - INFO: prompting_type = 
+25-08-21 17:46:07.365 - INFO: save_fig = True
+25-08-21 17:46:07.365 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_004.jpg
+25-08-21 17:46:07.365 - INFO: save_path = ./results
+25-08-21 17:46:07.365 - INFO: testing_data = mvtec
+25-08-21 17:46:07.365 - INFO: testing_model = image
+25-08-21 17:46:07.365 - INFO: use_hsf = True
+25-08-21 17:46:07.365 - INFO: use_memory_bank = True
+25-08-21 17:47:04.851 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:47:05.598 - INFO: Memory Bank built with 1 classes
+25-08-21 17:47:53.808 - INFO: anomaly_threshold = 0.6
+25-08-21 17:47:53.808 - INFO: batch_size = 1
+25-08-21 17:47:53.808 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:47:53.808 - INFO: class_name = leather
+25-08-21 17:47:53.808 - INFO: device = cuda
+25-08-21 17:47:53.808 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/001.jpg
+25-08-21 17:47:53.808 - INFO: image_size = 224
+25-08-21 17:47:53.808 - INFO: k_clusters = 20
+25-08-21 17:47:53.808 - INFO: k_shot = 10
+25-08-21 17:47:53.808 - INFO: memory_cluster_method = kmeans
+25-08-21 17:47:53.808 - INFO: memory_cluster_size = 32
+25-08-21 17:47:53.808 - INFO: mode = few_shot
+25-08-21 17:47:53.808 - INFO: model = ViT-B-16
+25-08-21 17:47:53.808 - INFO: prompting_branch = 
+25-08-21 17:47:53.808 - INFO: prompting_depth = 0
+25-08-21 17:47:53.808 - INFO: prompting_length = 0
+25-08-21 17:47:53.808 - INFO: prompting_type = 
+25-08-21 17:47:53.808 - INFO: save_fig = True
+25-08-21 17:47:53.808 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_001.jpg
+25-08-21 17:47:53.808 - INFO: save_path = ./results
+25-08-21 17:47:53.808 - INFO: testing_data = mvtec
+25-08-21 17:47:53.808 - INFO: testing_model = image
+25-08-21 17:47:53.808 - INFO: use_hsf = True
+25-08-21 17:47:53.808 - INFO: use_memory_bank = True
+25-08-21 17:48:50.849 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:48:51.613 - INFO: Memory Bank built with 1 classes
+25-08-21 17:49:29.549 - INFO: anomaly_threshold = 0.6
+25-08-21 17:49:29.549 - INFO: batch_size = 1
+25-08-21 17:49:29.549 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:49:29.549 - INFO: class_name = leather
+25-08-21 17:49:29.549 - INFO: device = cuda
+25-08-21 17:49:29.549 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 17:49:29.549 - INFO: image_size = 224
+25-08-21 17:49:29.549 - INFO: k_clusters = 20
+25-08-21 17:49:29.549 - INFO: k_shot = 10
+25-08-21 17:49:29.549 - INFO: memory_cluster_method = kmeans
+25-08-21 17:49:29.549 - INFO: memory_cluster_size = 32
+25-08-21 17:49:29.549 - INFO: mode = few_shot
+25-08-21 17:49:29.549 - INFO: model = ViT-B-16
+25-08-21 17:49:29.549 - INFO: prompting_branch = 
+25-08-21 17:49:29.549 - INFO: prompting_depth = 0
+25-08-21 17:49:29.549 - INFO: prompting_length = 0
+25-08-21 17:49:29.549 - INFO: prompting_type = 
+25-08-21 17:49:29.549 - INFO: save_fig = True
+25-08-21 17:49:29.549 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 17:49:29.549 - INFO: save_path = ./results
+25-08-21 17:49:29.549 - INFO: testing_data = mvtec
+25-08-21 17:49:29.549 - INFO: testing_model = image
+25-08-21 17:49:29.550 - INFO: use_hsf = True
+25-08-21 17:49:29.550 - INFO: use_memory_bank = True
+25-08-21 17:50:27.095 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:50:27.848 - INFO: Memory Bank built with 1 classes
+25-08-21 17:50:39.890 - INFO: anomaly_threshold = 0.7
+25-08-21 17:50:39.890 - INFO: batch_size = 1
+25-08-21 17:50:39.890 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 17:50:39.890 - INFO: class_name = leather
+25-08-21 17:50:39.890 - INFO: device = cuda
+25-08-21 17:50:39.890 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 17:50:39.890 - INFO: image_size = 224
+25-08-21 17:50:39.890 - INFO: k_clusters = 20
+25-08-21 17:50:39.890 - INFO: k_shot = 10
+25-08-21 17:50:39.890 - INFO: memory_cluster_method = kmeans
+25-08-21 17:50:39.890 - INFO: memory_cluster_size = 32
+25-08-21 17:50:39.890 - INFO: mode = few_shot
+25-08-21 17:50:39.890 - INFO: model = ViT-B-16
+25-08-21 17:50:39.890 - INFO: prompting_branch = 
+25-08-21 17:50:39.890 - INFO: prompting_depth = 0
+25-08-21 17:50:39.890 - INFO: prompting_length = 0
+25-08-21 17:50:39.890 - INFO: prompting_type = 
+25-08-21 17:50:39.890 - INFO: save_fig = True
+25-08-21 17:50:39.891 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 17:50:39.891 - INFO: save_path = ./results
+25-08-21 17:50:39.891 - INFO: testing_data = mvtec
+25-08-21 17:50:39.891 - INFO: testing_model = image
+25-08-21 17:50:39.891 - INFO: use_hsf = True
+25-08-21 17:50:39.891 - INFO: use_memory_bank = True
+25-08-21 17:51:37.229 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 17:51:37.978 - INFO: Memory Bank built with 1 classes
+25-08-21 18:04:21.485 - INFO: anomaly_threshold = 0.76
+25-08-21 18:04:21.485 - INFO: batch_size = 1
+25-08-21 18:04:21.485 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-21 18:04:21.485 - INFO: class_name = leather
+25-08-21 18:04:21.485 - INFO: device = cuda
+25-08-21 18:04:21.485 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-21 18:04:21.485 - INFO: image_size = 224
+25-08-21 18:04:21.485 - INFO: k_clusters = 20
+25-08-21 18:04:21.485 - INFO: k_shot = 10
+25-08-21 18:04:21.485 - INFO: memory_cluster_method = kmeans
+25-08-21 18:04:21.485 - INFO: memory_cluster_size = 32
+25-08-21 18:04:21.485 - INFO: mode = few_shot
+25-08-21 18:04:21.485 - INFO: model = ViT-B-16
+25-08-21 18:04:21.485 - INFO: prompting_branch = 
+25-08-21 18:04:21.485 - INFO: prompting_depth = 0
+25-08-21 18:04:21.485 - INFO: prompting_length = 0
+25-08-21 18:04:21.485 - INFO: prompting_type = 
+25-08-21 18:04:21.485 - INFO: save_fig = True
+25-08-21 18:04:21.485 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-21 18:04:21.485 - INFO: save_path = ./results
+25-08-21 18:04:21.485 - INFO: testing_data = mvtec
+25-08-21 18:04:21.485 - INFO: testing_model = image
+25-08-21 18:04:21.485 - INFO: use_hsf = True
+25-08-21 18:04:21.485 - INFO: use_memory_bank = True
+25-08-21 18:05:18.932 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-21 18:05:19.679 - INFO: Memory Bank built with 1 classes
+25-08-22 11:32:32.988 - INFO: anomaly_threshold = 0.76
+25-08-22 11:32:32.991 - INFO: batch_size = 1
+25-08-22 11:32:32.991 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/checkpoint_best.pth
+25-08-22 11:32:32.991 - INFO: class_name = leather
+25-08-22 11:32:32.991 - INFO: device = cuda
+25-08-22 11:32:32.991 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-22 11:32:32.991 - INFO: image_size = 224
+25-08-22 11:32:32.991 - INFO: k_clusters = 20
+25-08-22 11:32:32.991 - INFO: k_shot = 10
+25-08-22 11:32:32.991 - INFO: memory_cluster_method = kmeans
+25-08-22 11:32:32.991 - INFO: memory_cluster_size = 32
+25-08-22 11:32:32.992 - INFO: mode = few_shot
+25-08-22 11:32:32.992 - INFO: model = ViT-B-16
+25-08-22 11:32:32.992 - INFO: prompting_branch = 
+25-08-22 11:32:32.992 - INFO: prompting_depth = 0
+25-08-22 11:32:32.992 - INFO: prompting_length = 0
+25-08-22 11:32:32.992 - INFO: prompting_type = 
+25-08-22 11:32:32.992 - INFO: save_fig = True
+25-08-22 11:32:32.992 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250821-160829/bondsam_result_leather_005.jpg
+25-08-22 11:32:32.992 - INFO: save_path = ./results
+25-08-22 11:32:32.992 - INFO: testing_data = mvtec
+25-08-22 11:32:32.992 - INFO: testing_model = image
+25-08-22 11:32:32.992 - INFO: use_hsf = True
+25-08-22 11:32:32.992 - INFO: use_memory_bank = True
+25-08-22 11:33:31.972 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-22 11:33:32.867 - INFO: Memory Bank built with 1 classes
+25-08-22 11:33:33.140 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-22 11:33:33.281 - INFO: Anomaly map stats - Min: 0.05389311909675598, Max: 0.8060703277587891, Mean: 0.4389558434486389
+25-08-22 11:33:33.282 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 1.0, Mean: 0.5004953145980835
+25-08-22 11:33:33.282 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.12788982780612246
+25-08-22 12:24:16.459 - INFO: anomaly_threshold = 0.76
+25-08-22 12:24:16.459 - INFO: batch_size = 1
+25-08-22 12:24:16.459 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/checkpoint_best.pth
+25-08-22 12:24:16.459 - INFO: class_name = leather
+25-08-22 12:24:16.459 - INFO: device = cuda
+25-08-22 12:24:16.459 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-22 12:24:16.459 - INFO: image_size = 224
+25-08-22 12:24:16.459 - INFO: k_clusters = 20
+25-08-22 12:24:16.459 - INFO: k_shot = 10
+25-08-22 12:24:16.459 - INFO: memory_cluster_method = kmeans
+25-08-22 12:24:16.459 - INFO: memory_cluster_size = 32
+25-08-22 12:24:16.459 - INFO: mode = few_shot
+25-08-22 12:24:16.459 - INFO: model = ViT-B-16
+25-08-22 12:24:16.459 - INFO: prompting_branch = 
+25-08-22 12:24:16.460 - INFO: prompting_depth = 0
+25-08-22 12:24:16.460 - INFO: prompting_length = 0
+25-08-22 12:24:16.460 - INFO: prompting_type = 
+25-08-22 12:24:16.460 - INFO: save_fig = True
+25-08-22 12:24:16.460 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/bondsam_result_leather_005.jpg
+25-08-22 12:24:16.460 - INFO: save_path = ./results
+25-08-22 12:24:16.460 - INFO: testing_data = mvtec
+25-08-22 12:24:16.460 - INFO: testing_model = image
+25-08-22 12:24:16.460 - INFO: use_hsf = True
+25-08-22 12:24:16.460 - INFO: use_memory_bank = True
+25-08-22 12:25:13.320 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-22 12:25:14.098 - INFO: Memory Bank built with 1 classes
+25-08-22 12:25:14.362 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-22 12:25:14.481 - INFO: Anomaly map stats - Min: 0.05497586727142334, Max: 0.8318996429443359, Mean: 0.3759990632534027
+25-08-22 12:25:14.488 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 1.0, Mean: 0.4191170036792755
+25-08-22 12:25:14.490 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.026426977040816327
+25-08-22 12:25:32.904 - INFO: anomaly_threshold = 0.76
+25-08-22 12:25:32.905 - INFO: batch_size = 1
+25-08-22 12:25:32.905 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/checkpoint_best.pth
+25-08-22 12:25:32.905 - INFO: class_name = leather
+25-08-22 12:25:32.905 - INFO: device = cuda
+25-08-22 12:25:32.905 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg
+25-08-22 12:25:32.905 - INFO: image_size = 224
+25-08-22 12:25:32.905 - INFO: k_clusters = 20
+25-08-22 12:25:32.905 - INFO: k_shot = 10
+25-08-22 12:25:32.905 - INFO: memory_cluster_method = kmeans
+25-08-22 12:25:32.905 - INFO: memory_cluster_size = 32
+25-08-22 12:25:32.905 - INFO: mode = few_shot
+25-08-22 12:25:32.905 - INFO: model = ViT-B-16
+25-08-22 12:25:32.905 - INFO: prompting_branch = 
+25-08-22 12:25:32.905 - INFO: prompting_depth = 0
+25-08-22 12:25:32.905 - INFO: prompting_length = 0
+25-08-22 12:25:32.905 - INFO: prompting_type = 
+25-08-22 12:25:32.905 - INFO: save_fig = True
+25-08-22 12:25:32.905 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/bondsam_result_leather_006.jpg
+25-08-22 12:25:32.905 - INFO: save_path = ./results
+25-08-22 12:25:32.905 - INFO: testing_data = mvtec
+25-08-22 12:25:32.905 - INFO: testing_model = image
+25-08-22 12:25:32.905 - INFO: use_hsf = True
+25-08-22 12:25:32.905 - INFO: use_memory_bank = True
+25-08-22 12:26:30.278 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-22 12:26:31.036 - INFO: Memory Bank built with 1 classes
+25-08-22 12:26:31.068 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-22 12:26:31.173 - INFO: Anomaly map stats - Min: 0.03344389796257019, Max: 0.8646032810211182, Mean: 0.3824596405029297
+25-08-22 12:26:31.175 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 1.0, Mean: 0.4343886971473694
+25-08-22 12:26:31.182 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.03872369260204082
+25-08-22 12:26:43.547 - INFO: anomaly_threshold = 0.76
+25-08-22 12:26:43.547 - INFO: batch_size = 1
+25-08-22 12:26:43.547 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/checkpoint_best.pth
+25-08-22 12:26:43.547 - INFO: class_name = leather
+25-08-22 12:26:43.547 - INFO: device = cuda
+25-08-22 12:26:43.547 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg
+25-08-22 12:26:43.547 - INFO: image_size = 224
+25-08-22 12:26:43.547 - INFO: k_clusters = 20
+25-08-22 12:26:43.547 - INFO: k_shot = 10
+25-08-22 12:26:43.547 - INFO: memory_cluster_method = kmeans
+25-08-22 12:26:43.547 - INFO: memory_cluster_size = 32
+25-08-22 12:26:43.547 - INFO: mode = few_shot
+25-08-22 12:26:43.547 - INFO: model = ViT-B-16
+25-08-22 12:26:43.547 - INFO: prompting_branch = 
+25-08-22 12:26:43.547 - INFO: prompting_depth = 0
+25-08-22 12:26:43.547 - INFO: prompting_length = 0
+25-08-22 12:26:43.547 - INFO: prompting_type = 
+25-08-22 12:26:43.547 - INFO: save_fig = True
+25-08-22 12:26:43.548 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/bondsam_result_leather_006.jpg
+25-08-22 12:26:43.548 - INFO: save_path = ./results
+25-08-22 12:26:43.548 - INFO: testing_data = mvtec
+25-08-22 12:26:43.548 - INFO: testing_model = image
+25-08-22 12:26:43.548 - INFO: use_hsf = True
+25-08-22 12:26:43.548 - INFO: use_memory_bank = True
+25-08-22 12:27:40.636 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-22 12:27:41.438 - INFO: Memory Bank built with 1 classes
+25-08-22 12:27:41.470 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-22 12:27:41.563 - INFO: Anomaly map stats - Min: 0.03344389796257019, Max: 0.8646032810211182, Mean: 0.3824596405029297
+25-08-22 12:27:41.570 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 1.0, Mean: 0.4343886971473694
+25-08-22 12:27:41.571 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.03872369260204082
+25-08-22 12:27:58.037 - INFO: anomaly_threshold = 0.6
+25-08-22 12:27:58.037 - INFO: batch_size = 1
+25-08-22 12:27:58.037 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/checkpoint_best.pth
+25-08-22 12:27:58.037 - INFO: class_name = leather
+25-08-22 12:27:58.037 - INFO: device = cuda
+25-08-22 12:27:58.037 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg
+25-08-22 12:27:58.037 - INFO: image_size = 224
+25-08-22 12:27:58.037 - INFO: k_clusters = 20
+25-08-22 12:27:58.037 - INFO: k_shot = 10
+25-08-22 12:27:58.037 - INFO: memory_cluster_method = kmeans
+25-08-22 12:27:58.037 - INFO: memory_cluster_size = 32
+25-08-22 12:27:58.037 - INFO: mode = few_shot
+25-08-22 12:27:58.037 - INFO: model = ViT-B-16
+25-08-22 12:27:58.037 - INFO: prompting_branch = 
+25-08-22 12:27:58.037 - INFO: prompting_depth = 0
+25-08-22 12:27:58.037 - INFO: prompting_length = 0
+25-08-22 12:27:58.037 - INFO: prompting_type = 
+25-08-22 12:27:58.037 - INFO: save_fig = True
+25-08-22 12:27:58.037 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/bondsam_result_leather_006.jpg
+25-08-22 12:27:58.037 - INFO: save_path = ./results
+25-08-22 12:27:58.037 - INFO: testing_data = mvtec
+25-08-22 12:27:58.038 - INFO: testing_model = image
+25-08-22 12:27:58.038 - INFO: use_hsf = True
+25-08-22 12:27:58.038 - INFO: use_memory_bank = True
+25-08-22 12:28:54.886 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-22 12:28:55.633 - INFO: Memory Bank built with 1 classes
+25-08-22 12:28:55.661 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-22 12:28:55.798 - INFO: Anomaly map stats - Min: 0.03344389796257019, Max: 0.8646032810211182, Mean: 0.3824596405029297
+25-08-22 12:28:55.800 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 1.0, Mean: 0.4343886971473694
+25-08-22 12:28:55.800 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.15306122448979592
+25-08-22 12:34:28.314 - INFO: anomaly_threshold = 0.5
+25-08-22 12:34:28.314 - INFO: batch_size = 1
+25-08-22 12:34:28.314 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/checkpoint_best.pth
+25-08-22 12:34:28.314 - INFO: class_name = leather
+25-08-22 12:34:28.314 - INFO: device = cuda
+25-08-22 12:34:28.314 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-22 12:34:28.314 - INFO: image_size = 224
+25-08-22 12:34:28.314 - INFO: k_clusters = 20
+25-08-22 12:34:28.314 - INFO: k_shot = 10
+25-08-22 12:34:28.314 - INFO: memory_cluster_method = kmeans
+25-08-22 12:34:28.314 - INFO: memory_cluster_size = 32
+25-08-22 12:34:28.314 - INFO: mode = few_shot
+25-08-22 12:34:28.314 - INFO: model = ViT-B-16
+25-08-22 12:34:28.314 - INFO: prompting_branch = 
+25-08-22 12:34:28.314 - INFO: prompting_depth = 0
+25-08-22 12:34:28.314 - INFO: prompting_length = 0
+25-08-22 12:34:28.314 - INFO: prompting_type = 
+25-08-22 12:34:28.314 - INFO: save_fig = True
+25-08-22 12:34:28.314 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250822-115511/bondsam_result_leather_005.jpg
+25-08-22 12:34:28.314 - INFO: save_path = ./results
+25-08-22 12:34:28.314 - INFO: testing_data = mvtec
+25-08-22 12:34:28.314 - INFO: testing_model = image
+25-08-22 12:34:28.314 - INFO: use_hsf = True
+25-08-22 12:34:28.314 - INFO: use_memory_bank = True
+25-08-22 12:35:25.594 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-22 12:35:26.349 - INFO: Memory Bank built with 1 classes
+25-08-22 12:35:26.615 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-22 12:35:26.731 - INFO: Anomaly map stats - Min: 0.05497586727142334, Max: 0.8318996429443359, Mean: 0.3759990632534027
+25-08-22 12:35:26.733 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 1.0, Mean: 0.4191170036792755
+25-08-22 12:35:26.740 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.26957110969387754
+25-08-23 23:00:44.442 - INFO: anomaly_threshold = 0.5
+25-08-23 23:00:44.445 - INFO: batch_size = 1
+25-08-23 23:00:44.445 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250823-220633/checkpoint_best.pth
+25-08-23 23:00:44.445 - INFO: class_name = leather
+25-08-23 23:00:44.445 - INFO: device = cuda
+25-08-23 23:00:44.445 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/005.jpg
+25-08-23 23:00:44.445 - INFO: image_size = 224
+25-08-23 23:00:44.445 - INFO: k_clusters = 20
+25-08-23 23:00:44.446 - INFO: k_shot = 10
+25-08-23 23:00:44.446 - INFO: memory_cluster_method = kmeans
+25-08-23 23:00:44.446 - INFO: memory_cluster_size = 32
+25-08-23 23:00:44.446 - INFO: mode = few_shot
+25-08-23 23:00:44.446 - INFO: model = ViT-B-16
+25-08-23 23:00:44.446 - INFO: prompting_branch = 
+25-08-23 23:00:44.446 - INFO: prompting_depth = 0
+25-08-23 23:00:44.446 - INFO: prompting_length = 0
+25-08-23 23:00:44.446 - INFO: prompting_type = 
+25-08-23 23:00:44.446 - INFO: save_fig = True
+25-08-23 23:00:44.446 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250823-220633/bondsam_result_leather_005.jpg
+25-08-23 23:00:44.446 - INFO: save_path = ./results
+25-08-23 23:00:44.446 - INFO: testing_data = mvtec
+25-08-23 23:00:44.446 - INFO: testing_model = image
+25-08-23 23:00:44.446 - INFO: use_hsf = True
+25-08-23 23:00:44.446 - INFO: use_memory_bank = True
+25-08-23 23:01:41.313 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-23 23:01:42.081 - INFO: Memory Bank built with 1 classes
+25-08-23 23:01:42.354 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-23 23:01:42.465 - INFO: Anomaly map stats - Min: 0.012143373489379883, Max: 0.3233669102191925, Mean: 0.0524531826376915
+25-08-23 23:01:42.476 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 0.9999999403953552, Mean: 0.15473395586013794
+25-08-23 23:01:42.478 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.01371173469387755
+25-08-23 23:02:23.782 - INFO: anomaly_threshold = 0.5
+25-08-23 23:02:23.782 - INFO: batch_size = 1
+25-08-23 23:02:23.782 - INFO: ckt_path = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250823-220633/checkpoint_best.pth
+25-08-23 23:02:23.782 - INFO: class_name = leather
+25-08-23 23:02:23.782 - INFO: device = cuda
+25-08-23 23:02:23.782 - INFO: image_path = /home/ps/few-shot-research/AdaCLIP/test_image/006.jpg
+25-08-23 23:02:23.782 - INFO: image_size = 224
+25-08-23 23:02:23.782 - INFO: k_clusters = 20
+25-08-23 23:02:23.782 - INFO: k_shot = 10
+25-08-23 23:02:23.782 - INFO: memory_cluster_method = kmeans
+25-08-23 23:02:23.782 - INFO: memory_cluster_size = 32
+25-08-23 23:02:23.782 - INFO: mode = few_shot
+25-08-23 23:02:23.782 - INFO: model = ViT-B-16
+25-08-23 23:02:23.782 - INFO: prompting_branch = 
+25-08-23 23:02:23.782 - INFO: prompting_depth = 0
+25-08-23 23:02:23.782 - INFO: prompting_length = 0
+25-08-23 23:02:23.782 - INFO: prompting_type = 
+25-08-23 23:02:23.782 - INFO: save_fig = True
+25-08-23 23:02:23.782 - INFO: save_name = /home/ps/few-shot-research/Bondsam/workspaces/bondsam_exp_820/logs/20250823-220633/bondsam_result_leather_006.jpg
+25-08-23 23:02:23.782 - INFO: save_path = ./results
+25-08-23 23:02:23.782 - INFO: testing_data = mvtec
+25-08-23 23:02:23.782 - INFO: testing_model = image
+25-08-23 23:02:23.782 - INFO: use_hsf = True
+25-08-23 23:02:23.782 - INFO: use_memory_bank = True
+25-08-23 23:03:20.322 - INFO: Building Memory Bank for few-shot anomaly detection for class: leather
+25-08-23 23:03:21.069 - INFO: Memory Bank built with 1 classes
+25-08-23 23:03:21.104 - INFO: FastSAM mask stats - Min: 0.5, Max: 0.5, Mean: 0.5
+25-08-23 23:03:21.206 - INFO: Anomaly map stats - Min: 0.014397263526916504, Max: 0.35024622082710266, Mean: 0.05437156558036804
+25-08-23 23:03:21.208 - INFO: Normalized anomaly map stats - Min: 0.0, Max: 0.9999999403953552, Mean: 0.14124229550361633
+25-08-23 23:03:21.209 - INFO: Binary mask stats - Unique values: [  0 255], Non-zero ratio: 0.020348373724489797

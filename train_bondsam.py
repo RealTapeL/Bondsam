@@ -129,10 +129,35 @@ def train_bondsam(args):
         k_clusters=args.k_clusters,
         use_fastsam=args.use_fastsam,
         use_memory_bank=args.use_memory_bank,  # 添加Memory Bank选项
-        k_shot=args.k_shot,  # 添加少样本数量参数
-        memory_cluster_method=args.memory_cluster_method,
-        memory_cluster_size=args.memory_cluster_size
+        k_shot=args.k_shot  # 添加少样本数量参数
     ).to(device)
+
+    # 如果启用MAE预训练，则先进行预训练
+    if args.use_mae_pretrain:
+        logger.info("Starting MAE pretraining...")
+        # 获取无标签数据用于MAE预训练
+        train_data_cls_names, train_data, train_data_root = get_data(
+            dataset_type_list=args.training_data,
+            transform=model.preprocess,
+            target_transform=model.transform,
+            training=True,
+            use_fastsam=args.use_fastsam
+        )
+        
+        try:
+            from tools.mae import perform_mae_pretraining
+            perform_mae_pretraining(
+                model, 
+                train_data,
+                batch_size=batch_size,
+                epochs=args.mae_pretrain_epochs,
+                lr=args.mae_learning_rate,
+                masking_ratio=args.mae_masking_ratio,
+                logger=logger
+            )
+            logger.info("MAE pretraining completed.")
+        except ImportError as e:
+            logger.info(f"MAE pretrainer not available: {e}, skipping pretraining.")
 
     # 获取训练数据
     logger.info("Loading training data...")
@@ -227,7 +252,7 @@ def train_bondsam(args):
                 logger.info(f'Best model saved at epoch {epoch} with combined score {combined_score:.2f}')
         
     # 保存最终模型
-    model.save(f'{ckp_path}_best.pth')
+    model.save(f'{ckp_path}_final.pth')
     logger.info(f'Final model saved at epoch {epochs}')
     
     logger.info('Training completed.')
@@ -257,9 +282,11 @@ if __name__ == '__main__':
     parser.add_argument("--use_memory_bank", action="store_true", help="use memory bank for few-shot anomaly detection")
     parser.add_argument("--mode", type=str, default="few_shot", choices=["zero_shot", "few_shot"], help="training mode")
     parser.add_argument("--k_shot", type=int, default=1, help="number of shots for few-shot learning")
-    # Memory Bank聚类相关参数
-    parser.add_argument("--memory_cluster_method", type=str, default="kmeans", choices=["kmeans", "adaptive_pooling", "random_sampling"], help="clustering method for memory bank")
-    parser.add_argument("--memory_cluster_size", type=int, default=32, help="number of clusters for memory bank")
+    # MAE预训练相关参数
+    parser.add_argument("--use_mae_pretrain", action="store_true", help="use masked autoencoder for pretraining")
+    parser.add_argument("--mae_pretrain_epochs", type=int, default=10, help="number of epochs for MAE pretraining")
+    parser.add_argument("--mae_learning_rate", type=float, default=1e-4, help="learning rate for MAE pretraining")
+    parser.add_argument("--mae_masking_ratio", type=float, default=0.75, help="masking ratio for MAE")
     
     args = parser.parse_args()
     train_bondsam(args)
